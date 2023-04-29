@@ -26,10 +26,15 @@ window.onload = () => {
             STREET_ADDR = config['address']['street'];
         document.title = STREET_ADDR;
         document.getElementById('title').textContent = STREET_ADDR;
+        // return;
         REST.get('http://api.openweathermap.org/geo/1.0/direct?q=' + ADDR + '&limit=0&appid=' + WEATHER_API, geo => {
             const LAT = geo[0]['lat'], LON = geo[0]['lon'];
             REST.get('https://api.openweathermap.org/data/2.5/weather?lat=' + LAT + '&lon=' + LON + '&appid=' + WEATHER_API, weather => {
-                console.log(weather);
+                document.getElementById('weather').textContent =
+                    LAT + ',' + LON + '\n' +
+                    'Weather Status: ' + weather['weather'][0]['main'] + ' (' + weather['weather'][0]['description'] + ')\n' +
+                    'Temperature: ' + weather['main']['temp_min'] + ' to ' + weather['main']['temp_max'] + ' (' + weather['main']['temp'] + ' now)\n' +
+                    'TODO...';
             });
         });
     });
