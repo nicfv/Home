@@ -1,0 +1,50 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "type": "object",
+    "properties": {
+        "api": {
+            "description": "A list of required API keys/tokens",
+            "type": "object",
+            "properties": {
+                "openweathermap": {
+                    "description": "An API token from https://openweathermap.org/",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "openweathermap"
+            ]
+        },
+        "address": {
+            "description": "The physical address of your home",
+            "type": "object",
+            "properties": {
+                "street": {
+                    "description": "The street address of your home",
+                    "type": "string"
+                },
+                "city": {
+                    "description": "The city of your home",
+                    "type": "string"
+                },
+                "state": {
+                    "description": "The state code of your home (US only)",
+                    "type": "string"
+                },
+                "country": {
+                    "description": "The country code of your home",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "street",
+                "city",
+                "country"
+            ]
+        }
+    },
+    "required": [
+        "api",
+        "address"
+    ]
+}
