@@ -2,4 +2,38 @@
 
 * {
     font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+html {
+    padding: 1em;
+}
+
+body {
+    display: flex;
+    flex-direction: column; /* Update this */
+}
+
+h1 {
+    text-align: center;
+}
+
+div {
+    border: 1px solid rgba(128, 128, 128, 0.25);
+    background: rgba(128, 128, 128, 0.125);
+    border-radius: 4px;
+    margin: 4px;
+    height: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: black;
+        color: white;
+    }
 }
