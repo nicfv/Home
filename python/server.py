@@ -1,8 +1,7 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import json
-import os
 
-ALLOWED_POST = ['/test.json', '/test2.json']
+ALLOWED_POST = ['/data/shop.json', '/data/todo.json']
 
 
 class RequestHandler(SimpleHTTPRequestHandler):
@@ -10,7 +9,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
         if self.path in ALLOWED_POST:
             payload = json.loads(self.rfile.read(
                 int(self.headers.get('Content-Length'))))
-            with open(os.path.basename(self.path), 'w') as f:
+            with open(self.path[1:], 'w') as f:
                 json.dump(payload, f)
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')

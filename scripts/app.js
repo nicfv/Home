@@ -14,7 +14,7 @@ class REST {
 }
 
 window.onload = () => {
-    REST.post('test.json', { 'hello': 'world' }, console.log);
+    REST.post('data/todo.json', { 'hello': 'world' }, console.log);
     return;
     REST.get('config.json', config => {
         const WEATHER_API = config['api']['openweathermap'],
