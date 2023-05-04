@@ -2,6 +2,7 @@ import requests
 import json
 import time
 
+TARGET_DIR = 'collected'
 
 with open('config.json', 'r') as f:
     config = json.load(f)
@@ -19,14 +20,14 @@ ADDR = ','.join(filter(lambda x: x != None, [CITY, STATE, COUNTRY]))
 def getLocalNews():
     r = requests.get('https://newsapi.org/v2/everything?q=' +
                      CITY + '&sortBy=publishedAt&language=en&apiKey=' + NEWS_API)
-    with open('news-local.json', 'w') as f:
+    with open(TARGET_DIR + '/news-local.json', 'w') as f:
         f.write(r.text)
 
 
 def getGlobalNews():
     r = requests.get('https://newsapi.org/v2/top-headlines?country=' +
                      COUNTRY + '&apiKey=' + NEWS_API)
-    with open('news-global.json', 'w') as f:
+    with open(TARGET_DIR + '/news-global.json', 'w') as f:
         f.write(r.text)
 
 
@@ -38,7 +39,11 @@ def getWeather():
     lon = geo[0]['lon']
     r = requests.get('https://api.openweathermap.org/data/2.5/weather?lat=' +
                      str(lat) + '&lon=' + str(lon) + '&appid=' + WEATHER_API)
-    with open('weather.json', 'w') as f:
+    with open(TARGET_DIR + '/weather.json', 'w') as f:
+        f.write(r.text)
+    r = requests.get('http://api.openweathermap.org/data/2.5/air_pollution?lat=' +
+                     str(lat) + '&lon=' + str(lon) + '&appid=' + WEATHER_API)
+    with open(TARGET_DIR + '/aqi.json', 'w') as f:
         f.write(r.text)
 
 
