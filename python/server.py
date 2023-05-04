@@ -22,6 +22,6 @@ class RequestHandler(SimpleHTTPRequestHandler):
             self.wfile.write(b'{"status":400}')
 
 
-def startServer():
-    server = HTTPServer(('', 5500), RequestHandler)
+def startServer(port: int = 8000):
+    server = HTTPServer(('', port), RequestHandler)
     server.serve_forever()
