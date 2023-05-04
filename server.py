@@ -17,12 +17,12 @@ class RequestHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b'{"status":200}')
         else:
-            pass
             self.send_response(400)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(b'{"status":400}')
 
 
-server = HTTPServer(('', 5500), RequestHandler)
-server.serve_forever()
+def startServer():
+    server = HTTPServer(('', 5500), RequestHandler)
+    server.serve_forever()
