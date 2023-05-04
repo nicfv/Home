@@ -10,13 +10,15 @@ class REST {
             'headers': [
                 ['Content-type', 'application/json'],
             ],
-            'body': payload
+            'body': JSON.stringify(payload)
         }).then(response => response.json())
             .then(jsonData => callback(jsonData));
     }
 }
 
 window.onload = () => {
+    REST.post('test.json', { 'hello': 'world' }, console.log);
+    return;
     REST.get('config.json', config => {
         const WEATHER_API = config['api']['openweathermap'],
             ADDR = [config['address']['city'], config['address']['state'], config['address']['country']].filter(x => x !== undefined).join(','),
