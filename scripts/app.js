@@ -7,9 +7,6 @@ class REST {
     static post(url = '', payload = {}, callback = (response = {}) => { }) {
         fetch(url, {
             'method': 'POST',
-            'headers': [
-                ['Content-type', 'application/json'],
-            ],
             'body': JSON.stringify(payload)
         }).then(response => response.json())
             .then(jsonData => callback(jsonData));

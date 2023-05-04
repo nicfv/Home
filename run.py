@@ -1,6 +1,6 @@
 import threading
-from server import startServer
-from collect import routine
+from python.server import startServer
+from python.collect import routine
 
 t_server = threading.Thread(target=startServer)
 t_server.start()
