@@ -14,21 +14,15 @@ html {
     padding: 1em;
 }
 
-body {
-    display: flex;
-    flex-direction: column; /* Update this */
+[fd^=branch] {
+    gap: 8px;
 }
 
-h1 {
-    text-align: center;
-}
-
-div {
+[fd^=leaf] {
     border: 1px solid rgba(128, 128, 128, 0.25);
     background: rgba(128, 128, 128, 0.125);
     border-radius: 4px;
-    margin: 4px;
-    height: 100%;
+    padding: 4px;
 }
 
 @media (prefers-color-scheme: dark) {

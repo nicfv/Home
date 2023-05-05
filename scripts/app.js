@@ -1,4 +1,6 @@
 
+import { FlexDoc } from './FlexDoc.js';
+
 class REST {
     static get(url = '', callback = (response = {}) => { }) {
         fetch(url).then(response => response.json()).then(jsonData => callback(jsonData));
@@ -34,6 +36,8 @@ class JMath {
 }
 
 window.onload = () => {
+    FlexDoc.build(document.body, false, [100, [200, [100, 0]], 50]);
+    return;
     REST.get('collected/news-global.json', news => {
         console.log(news);
     });
