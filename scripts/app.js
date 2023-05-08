@@ -4,10 +4,11 @@ import { JTable } from './JTable.js';
 import { JTime } from './JTime.js';
 import { JMath } from './JMath.js';
 
+const MPS2MiPH = 3600 / 1609.3;
+
 window.onload = () => {
-    FlexDoc.build(document.body, true, [[0, 0, 0, 0, 50, 50], [[75, 25], [50, 50]]]);
-    FlexDoc.getBranch(1).style.width = 'min-content';
-    // return;
+    FlexDoc.build(document.body, true, [[0, 0, 0, 50, 50], [[75, 25], [50, 50]]]);
+    FlexDoc.getBranch(1).style.width = 'max-content';
     REST.get('collected/news-national.json', news => {
         console.log(news);
     });
@@ -22,7 +23,6 @@ window.onload = () => {
         mapLink.setAttribute('title', 'View this location on Google Maps.');
         mapLink.setAttribute('href', 'https://www.google.com/maps/@' + coords + ',14z');
         mapLink.setAttribute('target', '_blank');
-        // FlexDoc.getLeaf(0).appendChild(clock);
         JTable.build(FlexDoc.getLeaf(0), [
             [clock],
             ['Coordinates', mapLink],
@@ -35,26 +35,12 @@ window.onload = () => {
             ['Status', weather['weather'][0]['main'] + ' (' + weather['weather'][0]['description'] + ')'],
             ['Visibility', weather['visibility'] / 1000 + 'km'],
             ['Clouds', weather['clouds']['all'] + '%'],
+            ['Wind', weather['wind']['speed'] + 'm/s (' + weather['wind']['deg'] + '\u00B0)'],
         ], false);
         JTable.build(FlexDoc.getLeaf(2), [
             [],
         ], false);
         setInterval(() => clock.textContent = new Date().toLocaleString(), 1000);
         clock.parentElement.setAttribute('colspan', '2');
-        // console.log(clock.parentElement);
-        // console.log(clock.parentElement.parentElement);
-        // clock.parentElement.style.columnSpan = '2';
-        // const a_coords = document.getElementById('coords'),
-        //     weather_status = document.getElementById('weather_status'),
-        //     visibility = document.getElementById('visibility'),
-        //     cloud_coverage = document.getElementById('cloud_coverage'),
-        //     time_zone = document.getElementById('time_zone'),
-        //     coords = weather['coord']['lat'] + ',' + weather['coord']['lon'];
-        // a_coords.setAttribute('href', 'https://www.google.com/maps/@' + coords + ',14z');
-        // a_coords.textContent = '(' + coords + ')';
-        // weather_status.textContent = weather['weather'][0]['main'] + ' (' + weather['weather'][0]['description'] + ')';
-        // visibility.textContent = +weather['visibility'] / 1000 + 'km';
-        // cloud_coverage.textContent = weather['clouds']['all'] + '%';
-        // time_zone.textContent = +weather['timezone'] / 60 / 60 + 'h';
     })
 };
