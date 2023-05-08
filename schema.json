@@ -46,6 +46,22 @@
                 "city",
                 "country"
             ]
+        },
+        "preferences": {
+            "description": "General application preferences",
+            "type": "object",
+            "properties": {
+                "temperature": {
+                    "type": "string",
+                    "enum": [
+                        "F",
+                        "C"
+                    ]
+                }
+            },
+            "required": [
+                "temperature"
+            ]
         }
     },
     "required": [

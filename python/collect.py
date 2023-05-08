@@ -1,11 +1,14 @@
 import requests
 import json
 import time
+import os
 
 TARGET_DIR = 'collected'
 
 with open('config.json', 'r') as f:
     config = json.load(f)
+
+os.makedirs(TARGET_DIR, exist_ok=True)
 
 WEATHER_API = config.get('api').get('weather')
 NEWS_API = config.get('api').get('news')
@@ -24,14 +27,15 @@ def getLocalNews():
         f.write(r.text)
 
 
-def getGlobalNews():
+def getNationalNews():
     r = requests.get('https://newsapi.org/v2/top-headlines?country=' +
                      COUNTRY + '&apiKey=' + NEWS_API)
-    with open(TARGET_DIR + '/news-global.json', 'w') as f:
+    with open(TARGET_DIR + '/news-national.json', 'w') as f:
         f.write(r.text)
 
 
 def getWeather():
+    print('beep!')
     r = requests.get('http://api.openweathermap.org/geo/1.0/direct?q=' +
                      ADDR + '&limit=0&appid=' + WEATHER_API)
     geo = json.loads(r.text)
@@ -40,10 +44,6 @@ def getWeather():
     r = requests.get('https://api.openweathermap.org/data/2.5/weather?lat=' +
                      str(lat) + '&lon=' + str(lon) + '&appid=' + WEATHER_API)
     with open(TARGET_DIR + '/weather.json', 'w') as f:
-        f.write(r.text)
-    r = requests.get('http://api.openweathermap.org/data/2.5/air_pollution?lat=' +
-                     str(lat) + '&lon=' + str(lon) + '&appid=' + WEATHER_API)
-    with open(TARGET_DIR + '/aqi.json', 'w') as f:
         f.write(r.text)
 
 
@@ -56,6 +56,6 @@ def routine(tick: int = 0, dry: bool = False):
         print('[' + time.strftime('%T') + '] Getting news...')
         if not dry:
             getLocalNews()
-            getGlobalNews()
+            getNationalNews()
     time.sleep(60)
     routine((tick+1) % 60)

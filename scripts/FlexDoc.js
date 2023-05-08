@@ -11,15 +11,15 @@ export class FlexDoc {
      */
     static branch_id = 0;
     /**
-     * @readonly The ID prefix for leaf nodes.
+     * @private @readonly The ID prefix for leaf nodes.
      */
     static LEAF_PREFIX = 'leaf_';
     /**
-     * @readonly The ID prefix for branch nodes.
+     * @private @readonly The ID prefix for branch nodes.
      */
     static BRANCH_PREFIX = 'branch_';
     /**
-     * @readonly The element attribute name where unique IDs are set.
+     * @private @readonly The element attribute name where unique IDs are set.
      */
     static ATTRIBUTE_NAME = 'fd';
     /**
@@ -73,5 +73,21 @@ export class FlexDoc {
                 throw new Error('Incorrect type found in ' + d);
             }
         }
+    }
+    /**
+     * Return the branch element, if one exists with this ID.
+     * @param {number} id The unique ID number of this branch
+     * @returns The branch element, if one exists, or null
+     */
+    static getBranch(id) {
+        return document.querySelector('[' + this.ATTRIBUTE_NAME + '=' + this.BRANCH_PREFIX + id + ']');
+    }
+    /**
+     * Return the leaf element, if one exists with this ID.
+     * @param {number} id The unique ID number of this leaf
+     * @returns The leaf element, if one exists, or null
+     */
+    static getLeaf(id) {
+        return document.querySelector('[' + this.ATTRIBUTE_NAME + '=' + this.LEAF_PREFIX + id + ']');
     }
 }
