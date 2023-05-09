@@ -35,7 +35,6 @@ def getNationalNews():
 
 
 def getWeather():
-    print('beep!')
     r = requests.get('http://api.openweathermap.org/geo/1.0/direct?q=' +
                      ADDR + '&limit=0&appid=' + WEATHER_API)
     geo = json.loads(r.text)
@@ -47,15 +46,19 @@ def getWeather():
         f.write(r.text)
 
 
+def log(message: str):
+    print('[' + time.strftime('%T') + '] ' + message)
+
+
 def routine(tick: int = 0, dry: bool = False):
     if (tick % 5) == 0:
-        print('[' + time.strftime('%T') + '] Getting weather data...')
+        log('Getting weather data...')
         if not dry:
             getWeather()
     if (tick % 60) == 0:
-        print('[' + time.strftime('%T') + '] Getting news...')
+        log('Getting news...')
         if not dry:
             getLocalNews()
             getNationalNews()
     time.sleep(60)
-    routine((tick+1) % 60)
+    routine((tick+1) % 60, dry)
