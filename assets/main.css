@@ -26,6 +26,7 @@ a:link,
 a:visited {
     color: blue;
     text-decoration: none;
+    cursor: pointer;
 }
 
 a:hover {
@@ -34,6 +35,11 @@ a:hover {
 
 a:active {
     color: red;
+}
+
+th {
+    position: sticky;
+    top: 0;
 }
 
 /* FlexDoc */

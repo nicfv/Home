@@ -8,18 +8,25 @@ import { UnitSwitcher } from './UnitSwitcher.js';
 window.onload = () => {
     FlexDoc.build(document.body, true, [[0, 0, 0, 50, 50], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'max-content';
+    FlexDoc.getBranch(4).style.height = '35%';
     REST.get('config.json', config => {
         const root = document.querySelector(':root');
         // Set color preference
-        root.style.setProperty('--red', config['preferences']?.['favoriteColor']['red'] ?? 127);
-        root.style.setProperty('--green', config['preferences']?.['favoriteColor']['green'] ?? 127);
-        root.style.setProperty('--blue', config['preferences']?.['favoriteColor']['blue'] ?? 127);
+        const pref = config['preferences']?.['color'];
+        if (typeof pref === 'string') {
+            console.log(pref);
+            root.style.setProperty('--red', +('0x' + pref.substring(1, 3)));
+            root.style.setProperty('--green', +('0x' + pref.substring(3, 5)));
+            root.style.setProperty('--blue', +('0x' + pref.substring(5, 7)));
+        }
     });
     REST.get('collected/news-local.json', news => {
-        console.log(news);
+        generateNewspaper(FlexDoc.getLeaf(7), 'Local News', news);
+        FlexDoc.getLeaf(7).style.overflow = 'auto';
     });
     REST.get('collected/news-national.json', news => {
-        console.log(news);
+        generateNewspaper(FlexDoc.getLeaf(8), 'National News', news);
+        FlexDoc.getLeaf(8).style.overflow = 'auto';
     });
     REST.get('collected/weather.json', weather => {
         const dt_date = document.createElement('div'),
@@ -73,3 +80,28 @@ window.onload = () => {
         }, 1000);
     });
 };
+
+/**
+ * Generate a digital newspaper.
+ * @param {HTMLElement} parent The parent element
+ * @param {string} name The name of the newspaper
+ * @param {any} news The array of news articles
+ */
+function generateNewspaper(parent, name, news) {
+    const NP = new JTable(parent),
+        header = document.createElement('div');
+    header.textContent = name;
+    NP.addHeaders([header]);
+    for (let article of news['articles']) {
+        const internal = document.createElement('a'),
+            external = document.createElement('a');
+        internal.textContent = article['title'];
+        external.textContent = article['source']['name'];
+        internal.setAttribute('title', 'View a short summary of this article.');
+        external.setAttribute('title', 'Visit the article (links to external website.)');
+        external.setAttribute('target', '_blank');
+        external.setAttribute('href', article['url']);
+        NP.addData([internal, external]);
+    }
+    header.parentElement.setAttribute('colspan', '2');
+}

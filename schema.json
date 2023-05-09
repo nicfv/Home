@@ -51,31 +51,10 @@
             "description": "General application preferences",
             "type": "object",
             "properties": {
-                "favoriteColor": {
+                "color": {
                     "description": "The color to use as the accent color in the dashboard.",
-                    "type": "object",
-                    "properties": {
-                        "red": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 255
-                        },
-                        "green": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 255
-                        },
-                        "blue": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 255
-                        }
-                    },
-                    "required": [
-                        "red",
-                        "green",
-                        "blue"
-                    ]
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}$"
                 }
             }
         }

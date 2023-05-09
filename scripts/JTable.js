@@ -24,7 +24,7 @@ export class JTable {
             } else if (typeof datum === 'string') {
                 cell.textContent = datum;
             } else {
-                throw new Error('Incorrect data type.');
+                throw new Error('Incorrect data type: ' + typeof datum);
             }
             row.appendChild(cell);
         }
