@@ -36,6 +36,7 @@ export class UnitSwitcher {
         };
         refresh();
         this.el.addEventListener('click', refresh);
+        this.el.setAttribute('title', 'Click here to switch unit system.');
     }
     /**
      * Return the containing element of this `UnitSwitcher`

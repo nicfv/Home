@@ -29,6 +29,7 @@ export class JTable {
             row.appendChild(cell);
         }
         this.table.appendChild(row);
+        this.table.setAttribute('jt', 'jtable');
     }
     /**
      * Add a row of headers to the table.

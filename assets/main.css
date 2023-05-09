@@ -3,6 +3,7 @@
 * {
     font-family: sans-serif;
     box-sizing: border-box;
+    border-collapse: collapse;
 }
 
 html,
@@ -13,6 +14,23 @@ body {
 html {
     padding: 1em;
 }
+
+a,
+a:link,
+a:visited {
+    color: blue;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    color: red;
+}
+
+/* FlexDoc */
 
 [fd^=branch] {
     gap: 8px;
@@ -25,9 +43,53 @@ html {
     padding: 4px;
 }
 
+/* JTable */
+
+[jt=jtable] {
+    width: 100%;
+}
+
+[jt=jtable] tr:nth-of-type(even) {
+    background: rgba(128, 128, 128, 0.1);
+}
+
+[jt=jtable] tr {
+    padding: 2px;
+}
+
+/* UnitSwitcher */
+
+[usw=container] {
+    cursor: pointer;
+}
+
+[usw=value] {
+    font-weight: bold;
+}
+
+[usw=units] {
+    font-size: 0.75em;
+    vertical-align: text-top;
+    margin-left: 2px;
+}
+
+[usw=container]:hover [usw=units] {
+    text-decoration: underline;
+}
+
 @media (prefers-color-scheme: dark) {
     body {
         background: black;
         color: white;
+    }
+
+    a,
+    a:link,
+    a:visited {
+        color: cyan;
+    }
+
+    a:active {
+        color: pink;
     }
 }
