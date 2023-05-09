@@ -10,10 +10,10 @@ window.onload = () => {
     FlexDoc.getBranch(1).style.width = 'max-content';
     REST.get('config.json', config => {
         console.log(config);
-        REST.get('collected/news-national.json', news => {
+        REST.get('collected/news-local.json', news => {
             console.log(news);
         });
-        REST.get('collected/news-local.json', news => {
+        REST.get('collected/news-national.json', news => {
             console.log(news);
         });
         REST.get('collected/weather.json', weather => {
@@ -25,6 +25,8 @@ window.onload = () => {
             mapLink.setAttribute('title', 'View this location on Google Maps.');
             mapLink.setAttribute('href', 'https://www.google.com/maps/@' + coords + ',14z');
             mapLink.setAttribute('target', '_blank');
+            dt_date.setAttribute('title', 'Current date');
+            dt_clock.setAttribute('title', 'Current time');
             // Create unit switchers
             const visibility = new UnitSwitcher(weather['visibility'] / 1000, JMath.mtomi(weather['visibility']), 'km', 'mi'),
                 clouds = new UnitSwitcher(weather['clouds']['all'], weather['clouds']['all'] / 100, '%', '1.0'),
