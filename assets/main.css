@@ -1,5 +1,12 @@
 @import url('https://necolas.github.io/normalize.css/8.0.1/normalize.css');
 
+
+:root {
+    --red: 128;
+    --green: 128;
+    --blue: 128;
+}
+
 * {
     font-family: sans-serif;
     box-sizing: border-box;
@@ -37,8 +44,8 @@ a:active {
 }
 
 [fd^=leaf] {
-    border: 1px solid rgba(128, 128, 128, 0.25);
-    background: rgba(128, 128, 128, 0.125);
+    border: 1px solid rgba(var(--red), var(--green), var(--blue), 0.25);
+    background: rgba(var(--red), var(--green), var(--blue), 0.125);
     border-radius: 4px;
     padding: 4px;
 }
@@ -50,7 +57,7 @@ a:active {
 }
 
 [jt=jtable] tr:nth-of-type(even) {
-    background: rgba(128, 128, 128, 0.1);
+    background: rgba(var(--red), var(--green), var(--blue), 0.1);
 }
 
 [jt=jtable] tr {

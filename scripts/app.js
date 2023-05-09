@@ -9,7 +9,11 @@ window.onload = () => {
     FlexDoc.build(document.body, true, [[0, 0, 0, 50, 50], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'max-content';
     REST.get('config.json', config => {
-        console.log(config);
+        const root = document.querySelector(':root');
+        // Set color preference
+        root.style.setProperty('--red', config['preferences']?.['favoriteColor']['red'] ?? 127);
+        root.style.setProperty('--green', config['preferences']?.['favoriteColor']['green'] ?? 127);
+        root.style.setProperty('--blue', config['preferences']?.['favoriteColor']['blue'] ?? 127);
     });
     REST.get('collected/news-local.json', news => {
         console.log(news);
