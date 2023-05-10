@@ -43,14 +43,4 @@ export class JMath {
     static hPatoATM(hPa) {
         return hPa / 1013.25;
     }
-
-    static clamp(n = 0, min = 0, max = 0) {
-        if (n < min) {
-            return min;
-        }
-        if (n > max) {
-            return max;
-        }
-        return n;
-    }
 }
