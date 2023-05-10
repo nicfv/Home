@@ -56,24 +56,38 @@ button {
     font-weight: bold;
     color: white;
     border: 0;
-    float: right;
-}
-
-button.close {
-    background: tomato;
-}
-
-button.close:hover {
-    background: crimson;
-}
-
-button.close:active {
-    background: maroon;
 }
 
 button:disabled {
     background: gray !important;
     cursor: not-allowed;
+}
+
+button[title^=Close] {
+    float: right;
+    background: tomato;
+}
+
+button[title^=Close]:hover {
+    background: crimson;
+}
+
+button[title^=Close]:active {
+    background: maroon;
+}
+
+button[title^=Go] {
+    float: left;
+    display: block;
+    background: sandybrown;
+}
+
+button[title^=Go]:hover {
+    background: peru;
+}
+
+button[title^=Go]:active {
+    background: saddlebrown;
 }
 
 /* FlexDoc */
@@ -123,6 +137,31 @@ button:disabled {
     text-decoration: underline;
 }
 
+/* SVG */
+
+svg {
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+svg path {
+    stroke: black;
+    stroke-width: 2px;
+    stroke-linejoin: round;
+    fill: white;
+}
+
+svg path:hover {
+    cursor: pointer;
+    fill: yellow;
+}
+
+svg path:active {
+    fill: gold;
+}
+
 /* Dark Theme */
 
 @media (prefers-color-scheme: dark) {
@@ -139,5 +178,18 @@ button:disabled {
 
     a:active {
         color: pink;
+    }
+
+    svg path {
+        stroke: white;
+        fill: black;
+    }
+
+    svg path:hover {
+        fill: brown;
+    }
+
+    svg path:active {
+        fill: sienna;
     }
 }

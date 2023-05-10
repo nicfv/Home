@@ -5,11 +5,15 @@ import { JTime } from './JTime.js';
 import { JMath } from './JMath.js';
 import { JBtn } from './JBtn.js';
 import { UnitSwitcher } from './UnitSwitcher.js';
+import { FloorPlan } from './FloorPlan.js';
+
+let currentFloor = 0;
 
 window.onload = () => {
     FlexDoc.build(document.body, true, [[0, 0, 0, 50, 50], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'max-content';
-    FlexDoc.getBranch(4).style.height = '35%';
+    FlexDoc.getBranch(3).style.height = '65%';
+    FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
     REST.get('config.json', config => {
         const root = document.querySelector(':root');
         // Set color preference
@@ -20,6 +24,23 @@ window.onload = () => {
             root.style.setProperty('--green', +('0x' + pref.substring(3, 5)));
             root.style.setProperty('--blue', +('0x' + pref.substring(5, 7)));
         }
+        // Add floor plan controls
+        let showFloor = () => { };
+        const numFloors = config['layout']['floors'].length,
+            down = new JBtn('<', () => { showFloor(-1); }, FlexDoc.getLeaf(5), 'Go down one floor.'),
+            up = new JBtn('>', () => { showFloor(1); }, FlexDoc.getLeaf(5), 'Go up one floor.');
+        // Generate floor plan
+        const FP = new FloorPlan(FlexDoc.getLeaf(5));
+        showFloor = delta => {
+            currentFloor += delta;
+            (currentFloor > 0) ? down.enable() : down.disable();
+            (currentFloor < numFloors - 1) ? up.enable() : up.disable();
+            FP.clear();
+            for (let room of config['layout']['floors'][currentFloor]['rooms']) {
+                FP.addRoom(room['data'], () => alert(room['name']));
+            }
+        };
+        showFloor(0);
     });
     REST.get('collected/news-local.json', news => {
         generateNewspaper(FlexDoc.getLeaf(7), 'Local News', news);
@@ -90,7 +111,7 @@ window.onload = () => {
  */
 function generateNewspaper(parent, name, news) {
     let close = () => { };
-    const X = new JBtn('x', () => { close() }, parent, 'close'),
+    const X = new JBtn('x', () => { close() }, parent, 'Close the current article.'),
         NP = new JTable(parent),
         ART = new JTable(parent),
         header = document.createElement('div');
