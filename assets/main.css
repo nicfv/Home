@@ -77,8 +77,6 @@ button[title^=Close]:active {
 }
 
 button[title^=Go] {
-    float: left;
-    display: block;
     background: sandybrown;
 }
 
@@ -88,6 +86,10 @@ button[title^=Go]:hover {
 
 button[title^=Go]:active {
     background: saddlebrown;
+}
+
+div.floorPlanControls {
+    position: absolute;
 }
 
 /* FlexDoc */

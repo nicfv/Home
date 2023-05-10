@@ -27,8 +27,12 @@ window.onload = () => {
         // Add floor plan controls
         let showFloor = () => { };
         const numFloors = config['layout']['floors'].length,
-            down = new JBtn('<', () => { showFloor(-1); }, FlexDoc.getLeaf(5), 'Go down one floor.'),
-            up = new JBtn('>', () => { showFloor(1); }, FlexDoc.getLeaf(5), 'Go up one floor.');
+            btnContainer = document.createElement('div'),
+            down = new JBtn('<', () => { showFloor(-1); }, btnContainer, 'Go down one floor.'),
+            up = new JBtn('>', () => { showFloor(1); }, btnContainer, 'Go up one floor.');
+        btnContainer.setAttribute('class', 'floorPlanControls');
+        FlexDoc.getLeaf(5).style.position = 'relative';
+        FlexDoc.getLeaf(5).appendChild(btnContainer);
         // Generate floor plan
         const FP = new FloorPlan(FlexDoc.getLeaf(5));
         showFloor = delta => {
@@ -37,7 +41,8 @@ window.onload = () => {
             (currentFloor < numFloors - 1) ? up.enable() : up.disable();
             FP.clear();
             for (let room of config['layout']['floors'][currentFloor]['rooms']) {
-                FP.addRoom(room['data'], () => alert(room['name']));
+                const floorName = config['layout']['floors'][currentFloor]['name'];
+                FP.addRoom(room['data'], () => FlexDoc.getLeaf(6).textContent = floorName + ' / ' + room['name']);
             }
         };
         showFloor(0);
