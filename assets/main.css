@@ -42,6 +42,32 @@ th {
     top: 0;
 }
 
+img {
+    display: block;
+    max-width: 100%;
+    /* temporary max-height */
+    max-height: 10em;
+    height: auto;
+    margin: auto;
+}
+
+button.close {
+    cursor: pointer;
+    background: tomato;
+    font-weight: bold;
+    color: white;
+    border: 0;
+    float: right;
+}
+
+button.close:hover {
+    background: crimson;
+}
+
+button.close:active {
+    background: maroon;
+}
+
 /* FlexDoc */
 
 [fd^=branch] {

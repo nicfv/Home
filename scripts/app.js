@@ -3,6 +3,7 @@ import { REST } from './Rest.js';
 import { JTable } from './JTable.js';
 import { JTime } from './JTime.js';
 import { JMath } from './JMath.js';
+import { JBtn } from './JBtn.js';
 import { UnitSwitcher } from './UnitSwitcher.js';
 
 window.onload = () => {
@@ -88,10 +89,46 @@ window.onload = () => {
  * @param {any} news The array of news articles
  */
 function generateNewspaper(parent, name, news) {
-    const NP = new JTable(parent),
+    let close = () => { };
+    const X = new JBtn('x', () => { close() }, parent, 'close'),
+        NP = new JTable(parent),
+        ART = new JTable(parent),
         header = document.createElement('div');
     header.textContent = name;
     NP.addHeaders([header]);
+    header.parentElement.setAttribute('colspan', '2');
+    ART.hide();
+    X.hide();
+    close = () => {
+        NP.show();
+        ART.hide();
+        X.hide();
+    }
+    /**
+     * Display an article in the parent element
+     * @param {object} article The article object to display
+     */
+    function showArticle(article) {
+        NP.hide();
+        X.show();
+        ART.show();
+        ART.clear();
+        ART.addData([article['title']]);
+        if (article['urlToImage']) {
+            const img = document.createElement('img');
+            img.src = article['urlToImage'];
+            ART.addData([img]);
+        }
+        ART.addData([article['author'] ?? 'No Author']);
+        ART.addData([article['publishedAt']]);
+        ART.addData([article['description']]);
+        const external = document.createElement('a');
+        external.textContent = article['source']['name'];
+        external.setAttribute('title', 'Visit the article (links to external website.)');
+        external.setAttribute('target', '_blank');
+        external.setAttribute('href', article['url']);
+        ART.addData([external]);
+    }
     for (let article of news['articles']) {
         const internal = document.createElement('a'),
             external = document.createElement('a');
@@ -101,7 +138,7 @@ function generateNewspaper(parent, name, news) {
         external.setAttribute('title', 'Visit the article (links to external website.)');
         external.setAttribute('target', '_blank');
         external.setAttribute('href', article['url']);
+        internal.addEventListener('click', () => showArticle(article));
         NP.addData([internal, external]);
     }
-    header.parentElement.setAttribute('colspan', '2');
 }
