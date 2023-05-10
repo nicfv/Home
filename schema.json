@@ -47,6 +47,43 @@
                 "country"
             ]
         },
+        "layout": {
+            "description": "Define your home's floor plan here.",
+            "type": "object",
+            "properties": {
+                "floors": {
+                    "description": "Define an array containing the floors in your home, starting with the lowest first.",
+                    "type": "array",
+                    "items": {
+                        "description": "Define the rooms in the floor plan here.",
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "description": "The unique name of this room.",
+                                "type": "string"
+                            },
+                            "data": {
+                                "description": "(X,Y) data of room corners in order, in any consistent unit system.",
+                                "type": "array",
+                                "items": {
+                                    "description": "(X,Y) data of this room corner.",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number"
+                                    },
+                                    "minItems": 2,
+                                    "maxItems": 2
+                                }
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "data"
+                        ]
+                    }
+                }
+            }
+        },
         "preferences": {
             "description": "General application preferences",
             "type": "object",
@@ -61,6 +98,7 @@
     },
     "required": [
         "api",
-        "address"
+        "address",
+        "layout"
     ]
 }
