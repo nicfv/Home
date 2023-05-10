@@ -28,4 +28,16 @@ export class JBtn {
     show() {
         this.el.style.display = 'initial';
     }
+    /**
+     * Disable this button.
+     */
+    disable() {
+        this.el.disabled = true;
+    }
+    /**
+     * Enable this button.
+     */
+    enable() {
+        this.el.disabled = false;
+    }
 }

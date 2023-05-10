@@ -51,13 +51,16 @@ img {
     margin: auto;
 }
 
-button.close {
+button {
     cursor: pointer;
-    background: tomato;
     font-weight: bold;
     color: white;
     border: 0;
     float: right;
+}
+
+button.close {
+    background: tomato;
 }
 
 button.close:hover {
@@ -66,6 +69,11 @@ button.close:hover {
 
 button.close:active {
     background: maroon;
+}
+
+button:disabled {
+    background: gray !important;
+    cursor: not-allowed;
 }
 
 /* FlexDoc */
