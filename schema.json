@@ -59,26 +59,43 @@
                         "type": "object",
                         "properties": {
                             "name": {
-                                "description": "The unique name of this room.",
+                                "description": "The unique name of this floor. E.g. 1st Floor...",
                                 "type": "string"
                             },
-                            "data": {
-                                "description": "(X,Y) data of room corners in order, in any consistent unit system.",
+                            "rooms": {
+                                "description": "",
                                 "type": "array",
                                 "items": {
-                                    "description": "(X,Y) data of this room corner.",
-                                    "type": "array",
-                                    "items": {
-                                        "type": "number"
+                                    "properties": {
+                                        "name": {
+                                            "description": "The unique name of this room.",
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "description": "(X,Y) data of room corners in order, in any consistent unit system.",
+                                            "type": "array",
+                                            "items": {
+                                                "description": "(X,Y) data of this room corner.",
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "number"
+                                                },
+                                                "minItems": 2,
+                                                "maxItems": 2
+                                            },
+                                            "minItems": 3
+                                        }
                                     },
-                                    "minItems": 2,
-                                    "maxItems": 2
+                                    "required": [
+                                        "name",
+                                        "data"
+                                    ]
                                 }
                             }
                         },
                         "required": [
                             "name",
-                            "data"
+                            "rooms"
                         ]
                     }
                 }
