@@ -46,6 +46,26 @@ export class JTable {
         this.addRow(row, 'td');
     }
     /**
+     * Hide the table.
+     */
+    hide() {
+        this.table.style.display = 'none';
+    }
+    /**
+     * Unhide the table.
+     */
+    show() {
+        this.table.style.display = 'initial';
+    }
+    /**
+     * Remove all rows from the table.
+     */
+    clear() {
+        while (this.table.firstChild) {
+            this.table.removeChild(this.table.firstChild);
+        }
+    }
+    /**
      * Create a new fully defined table and append it to the parent element.
      * @param {HTMLElement} parent The parent element for this `JTable`
      * @param {any[][]} data 2D square array of data to insert into the table
