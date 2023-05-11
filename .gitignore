@@ -1,4 +1,4 @@
-config.json
+./config.json
 collected
 data
 __pycache__
