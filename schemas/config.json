@@ -69,7 +69,8 @@
                                     "properties": {
                                         "name": {
                                             "description": "The unique name of this room.",
-                                            "type": "string"
+                                            "type": "string",
+                                            "pattern": "^[^$].+"
                                         },
                                         "data": {
                                             "description": "(X,Y) data of room corners in order, in any consistent unit system.",
