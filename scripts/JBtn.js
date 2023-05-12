@@ -7,14 +7,14 @@ export class JBtn {
      * 
      * @param {string} text The text content in the button.
      * @param {() => any} onclick The callback function when this button is clicked.
-     * @param {HTMLElement} parent Appends this button onto the parent element.
+     * @param {HTMLElement} parent Optional. If set, appends this button onto the parent element.
      * @param {string} tooltip Optional. If set, renders a tooltip containing this string.
      */
     constructor(text, onclick, parent, tooltip = '') {
         this.el.textContent = text;
         this.el.addEventListener('click', onclick);
         tooltip && this.el.setAttribute('title', tooltip);
-        parent.appendChild(this.el);
+        parent && parent.appendChild(this.el);
     }
     /**
      * Hide this button.
@@ -39,5 +39,12 @@ export class JBtn {
      */
     enable() {
         this.el.disabled = false;
+    }
+    /**
+     * Return the button element to append onto the parent element.
+     * @returns The button HTML element.
+     */
+    element() {
+        return this.el;
     }
 }
