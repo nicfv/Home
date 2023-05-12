@@ -12,7 +12,7 @@ let currentFloor = 0,
     roomData = undefined;
 
 window.onload = () => {
-    FlexDoc.build(document.body, true, [[0, 0, 0, 50, 50], [[75, 25], [50, 50]]]);
+    FlexDoc.build(document.body, true, [[0, 0, 0, 100], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'max-content';
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
@@ -36,31 +36,31 @@ window.onload = () => {
             floorName = document.createElement('span');
         btnContainer.setAttribute('class', 'floorPlanControls');
         btnContainer.appendChild(floorName);
-        FlexDoc.getLeaf(5).style.position = 'relative';
-        FlexDoc.getLeaf(5).appendChild(btnContainer);
+        FlexDoc.getLeaf(4).style.position = 'relative';
+        FlexDoc.getLeaf(4).appendChild(btnContainer);
         // Generate floor plan
-        const FP = new FloorPlan(FlexDoc.getLeaf(5));
+        const FP = new FloorPlan(FlexDoc.getLeaf(4));
         showFloor = delta => {
             currentFloor += delta;
             (currentFloor > 0) ? down.enable() : down.disable();
             (currentFloor < numFloors - 1) ? up.enable() : up.disable();
             floorName.textContent = config['layout']['floors'][currentFloor]['name'];
             FP.clear();
-            showRoom(FlexDoc.getLeaf(6));
+            showRoom(FlexDoc.getLeaf(5));
             for (let room of config['layout']['floors'][currentFloor]['rooms']) {
-                FP.addRoom(room['data'], () => showRoom(FlexDoc.getLeaf(6), room['name']));
+                FP.addRoom(room['data'], () => showRoom(FlexDoc.getLeaf(5), room['name']));
             }
         };
         showFloor(0);
-        FlexDoc.getLeaf(6).style.overflow = 'auto';
+        FlexDoc.getLeaf(5).style.overflow = 'auto';
     });
     REST.get('collected/news-local.json', news => {
-        generateNewspaper(FlexDoc.getLeaf(7), 'Local News', news);
-        FlexDoc.getLeaf(7).style.overflow = 'auto';
+        generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news);
+        FlexDoc.getLeaf(6).style.overflow = 'auto';
     });
     REST.get('collected/news-national.json', news => {
-        generateNewspaper(FlexDoc.getLeaf(8), 'National News', news);
-        FlexDoc.getLeaf(8).style.overflow = 'auto';
+        generateNewspaper(FlexDoc.getLeaf(7), 'National News', news);
+        FlexDoc.getLeaf(7).style.overflow = 'auto';
     });
     REST.get('collected/weather.json', weather => {
         const dt_date = document.createElement('div'),
