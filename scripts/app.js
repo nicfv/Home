@@ -9,17 +9,14 @@ import { FloorPlan } from './FloorPlan.js';
 import { Checklist } from './Checklist.js';
 
 let currentFloor = 0,
-    data = {
-        shop: undefined,
-        todo: undefined,
-        room: undefined,
-    };
+    roomData = undefined;
 
 window.onload = () => {
     FlexDoc.build(document.body, true, [[0, 0, 0, 50, 50], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'max-content';
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
+    REST.get('data/room.json', room => roomData = room);
     REST.get('config.json', config => {
         const root = document.querySelector(':root');
         // Set color preference
@@ -43,10 +40,6 @@ window.onload = () => {
         FlexDoc.getLeaf(5).appendChild(btnContainer);
         // Generate floor plan
         const FP = new FloorPlan(FlexDoc.getLeaf(5));
-        REST.get('data/room.json', room => {
-            data.room = room;
-            console.log(data);
-        });
         showFloor = delta => {
             currentFloor += delta;
             (currentFloor > 0) ? down.enable() : down.disable();
@@ -59,6 +52,7 @@ window.onload = () => {
             }
         };
         showFloor(0);
+        FlexDoc.getLeaf(6).style.overflow = 'auto';
     });
     REST.get('collected/news-local.json', news => {
         generateNewspaper(FlexDoc.getLeaf(7), 'Local News', news);
@@ -193,15 +187,15 @@ function showRoom(parent, name) {
     }
     if (name) {
         const CL = new Checklist(parent, list => {
-            data.room[name] = list
-            REST.post('data/room.json', data.room, r => console.log(r));
+            roomData[name] = list
+            REST.post('data/room.json', roomData, console.log);
         }, name);
         // No list has been created yet for this room
-        if (!Array.isArray(data.room[name])) {
-            data.room[name] = [];
+        if (!Array.isArray(roomData[name])) {
+            roomData[name] = [];
         }
         // Add any pre-existing items from this room
-        for (let item of data.room[name]) {
+        for (let item of roomData[name]) {
             CL.addItem(item);
         }
     } else {
