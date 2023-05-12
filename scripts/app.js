@@ -7,22 +7,19 @@ import { JBtn } from './JBtn.js';
 import { UnitSwitcher } from './UnitSwitcher.js';
 import { FloorPlan } from './FloorPlan.js';
 import { Checklist } from './Checklist.js';
-
-let currentFloor = 0,
-    roomData = undefined;
+import { JPath } from './JPath.js';
 
 window.onload = () => {
+    let currentFloor = 0;
     FlexDoc.build(document.body, true, [[0, 0, 0, 100], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'max-content';
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
-    REST.get('data/room.json', room => roomData = room);
     REST.get('config.json', config => {
         const root = document.querySelector(':root');
         // Set color preference
         const pref = config['preferences']?.['color'];
         if (typeof pref === 'string') {
-            console.log(pref);
             root.style.setProperty('--red', +('0x' + pref.substring(1, 3)));
             root.style.setProperty('--green', +('0x' + pref.substring(3, 5)));
             root.style.setProperty('--blue', +('0x' + pref.substring(5, 7)));
@@ -40,28 +37,24 @@ window.onload = () => {
         FlexDoc.getLeaf(4).appendChild(btnContainer);
         // Generate floor plan
         const FP = new FloorPlan(FlexDoc.getLeaf(4));
-        showFloor = delta => {
-            currentFloor += delta;
-            (currentFloor > 0) ? down.enable() : down.disable();
-            (currentFloor < numFloors - 1) ? up.enable() : up.disable();
-            floorName.textContent = config['layout']['floors'][currentFloor]['name'];
-            FP.clear();
-            showRoom(FlexDoc.getLeaf(5));
-            for (let room of config['layout']['floors'][currentFloor]['rooms']) {
-                FP.addRoom(room['data'], () => showRoom(FlexDoc.getLeaf(5), room['name']));
-            }
-        };
-        showFloor(0);
-        FlexDoc.getLeaf(5).style.overflow = 'auto';
+        REST.get('data/room.json', roomData => {
+            showFloor = delta => {
+                currentFloor += delta;
+                (currentFloor > 0) ? down.enable() : down.disable();
+                (currentFloor < numFloors - 1) ? up.enable() : up.disable();
+                floorName.textContent = config['layout']['floors'][currentFloor]['name'];
+                FP.clear();
+                showRoom(FlexDoc.getLeaf(5));
+                for (let room of config['layout']['floors'][currentFloor]['rooms']) {
+                    FP.addRoom(room['data'], () => showRoom(FlexDoc.getLeaf(5), room['name'], roomData));
+                }
+            };
+            showFloor(0);
+        });
+        showCustom(FlexDoc.getLeaf(3), config['custom']);
     });
-    REST.get('collected/news-local.json', news => {
-        generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news);
-        FlexDoc.getLeaf(6).style.overflow = 'auto';
-    });
-    REST.get('collected/news-national.json', news => {
-        generateNewspaper(FlexDoc.getLeaf(7), 'National News', news);
-        FlexDoc.getLeaf(7).style.overflow = 'auto';
-    });
+    REST.get('collected/news-local.json', news => generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news));
+    REST.get('collected/news-national.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'National News', news));
     REST.get('collected/weather.json', weather => {
         const dt_date = document.createElement('div'),
             dt_clock = document.createElement('div'),
@@ -122,6 +115,7 @@ window.onload = () => {
  * @param {any} news The array of news articles
  */
 function generateNewspaper(parent, name, news) {
+    parent.style.overflow = 'auto';
     let close = () => { };
     const X = new JBtn('x', () => { close() }, parent, 'Close the current article.'),
         NP = new JTable(parent),
@@ -180,25 +174,50 @@ function generateNewspaper(parent, name, news) {
  * Show room details in the parent element.
  * @param {HTMLElement} parent The containing element.
  * @param {string} name The name of the room from the configuration file. If left blank, will show a default message.
+ * @param {object} data The data object from the data JSON file.
  */
-function showRoom(parent, name) {
+function showRoom(parent, name, data) {
+    parent.style.overflow = 'auto';
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
     if (name) {
         const CL = new Checklist(parent, list => {
-            roomData[name] = list
-            REST.post('data/room.json', roomData, console.log);
+            data[name] = list
+            REST.post('data/room.json', data, console.log);
         }, name);
         // No list has been created yet for this room
-        if (!Array.isArray(roomData[name])) {
-            roomData[name] = [];
+        if (!Array.isArray(data[name])) {
+            data[name] = [];
         }
         // Add any pre-existing items from this room
-        for (let item of roomData[name]) {
+        for (let item of data[name]) {
             CL.addItem(item);
         }
     } else {
         parent.textContent = 'Click on a room in the floor plan to view details!';
+    }
+}
+
+/**
+ * Show the custom panel.
+ * @param {HTMLElement} parent The parent element to append the custom panel onto
+ * @param {object} customData The custom data from the configuration JSON file
+ */
+function showCustom(parent, customData) {
+    parent.style.overflow = 'auto';
+    const JT = new JTable(parent),
+        header = document.createElement('div');
+    JT.addHeaders([header]);
+    header.textContent = 'Custom';
+    header.parentElement.setAttribute('colspan', '2');
+    if (Array.isArray(customData)) {
+        for (let datasource of customData) {
+            REST.get(datasource['source'], data => {
+                for (let field of datasource['fields']) {
+                    JT.addData([field['label'], JPath.get(field['value'], data)]);
+                }
+            });
+        }
     }
 }

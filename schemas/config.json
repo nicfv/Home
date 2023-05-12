@@ -112,6 +112,46 @@
                     "pattern": "^#[0-9a-fA-F]{6}$"
                 }
             }
+        },
+        "custom": {
+            "description": "Display static data in the custom panel from JSON files.",
+            "type": "array",
+            "items": {
+                "description": "Define a data source for the custom panel.",
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "description": "The relative source file path or URL of the JSON data file.",
+                        "type": "string"
+                    },
+                    "fields": {
+                        "description": "Define one or multiple data fields to display from this data source.",
+                        "type": "array",
+                        "items": {
+                            "description": "Represents one data field.",
+                            "type": "object",
+                            "properties": {
+                                "label": {
+                                    "description": "The user-readable field name.",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "description": "Input a valid JSON path to obtain a data value.",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "label",
+                                "value"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "source",
+                    "fields"
+                ]
+            }
         }
     },
     "required": [
