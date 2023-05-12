@@ -215,9 +215,11 @@ function showCustom(parent, customData) {
         for (let datasource of customData) {
             REST.get(datasource['source'], data => {
                 for (let field of datasource['fields']) {
-                    JT.addData([field['label'], JPath.get(field['value'], data)]);
+                    JT.addData([field['label'], '' + JPath.get(field['value'], data)]);
                 }
             });
         }
+    } else {
+        JT.addData(['No custom datasources found.']);
     }
 }
