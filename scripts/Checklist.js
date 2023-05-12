@@ -33,6 +33,7 @@ export class Checklist extends JTable {
         addBtn.addEventListener('click', () => {
             this.addItem(input.value);
             this.onchange(this.list);
+            input.value = '';
         });
         this.addHeaders([input, addBtn]);
     }

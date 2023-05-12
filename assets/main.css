@@ -10,6 +10,7 @@
     font-family: sans-serif;
     box-sizing: border-box;
     border-collapse: collapse;
+    outline: none;
 }
 
 html,
@@ -51,6 +52,10 @@ img {
     margin: auto;
 }
 
+input[type=text] {
+    width: 100%;
+}
+
 button {
     cursor: pointer;
     font-weight: bold;
@@ -88,8 +93,27 @@ button[title^=Go]:active {
     background: saddlebrown;
 }
 
+button[title^=Add],
+button[title^=Check] {
+    background: lightseagreen;
+}
+
+button[title^=Add]:hover,
+button[title^=Check]:hover {
+    background: mediumseagreen;
+}
+
+button[title^=Add]:active,
+button[title^=Check]:active {
+    background: seagreen;
+}
+
 div.floorPlanControls {
     position: absolute;
+}
+
+div.floorPlanControls span {
+    margin: 0 4px;
 }
 
 /* FlexDoc */
