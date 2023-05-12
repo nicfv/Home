@@ -1,8 +1,8 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import json
-from python.setup import TARGET_DIR, TARGET_FILES
+from python.setup import TARGET_DIR, TARGET_FILE
 
-ALLOWED_POST = ['/' + TARGET_DIR + '/' + f for f in TARGET_FILES]
+ALLOWED_POST = '/' + TARGET_DIR + '/' + TARGET_FILE
 
 
 class RequestHandler(SimpleHTTPRequestHandler):

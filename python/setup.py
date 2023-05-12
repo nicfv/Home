@@ -1,13 +1,12 @@
 import os
 
 TARGET_DIR = 'data'
-TARGET_FILES = ['shop.json', 'todo.json', 'room.json']
+TARGET_FILE = 'room.json'
 
 
 def makeFiles():
     os.makedirs(TARGET_DIR, exist_ok=True)
-    for file in TARGET_FILES:
-        path = os.path.join(TARGET_DIR, file)
-        if not os.path.exists(path):
-            with open(path, 'w') as f:
-                f.write('{ "$schema": "../schemas/' + file + '" }')
+    path = os.path.join(TARGET_DIR, TARGET_FILE)
+    if not os.path.exists(path):
+        with open(path, 'w') as f:
+            f.write('{ "$schema": "../schemas/' + TARGET_FILE + '" }')
