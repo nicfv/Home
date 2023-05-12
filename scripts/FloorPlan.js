@@ -35,7 +35,7 @@ export class FloorPlan {
      * @private Set the viewbox of the SVG based on the floor size.
      */
     setViewBox() {
-        this.svg.setAttribute('viewBox', this.minX + ' ' + this.minY + ' ' + this.maxX + ' ' + this.maxY);
+        this.svg.setAttribute('viewBox', this.minX + ' ' + this.minY + ' ' + (this.maxX - this.minX) + ' ' + (this.maxY - this.minY));
     }
     /**
      * Add a room to this floor plan.
