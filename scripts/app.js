@@ -6,8 +6,14 @@ import { JMath } from './JMath.js';
 import { JBtn } from './JBtn.js';
 import { UnitSwitcher } from './UnitSwitcher.js';
 import { FloorPlan } from './FloorPlan.js';
+import { Checklist } from './Checklist.js';
 
-let currentFloor = 0;
+let currentFloor = 0,
+    data = {
+        shop: undefined,
+        todo: undefined,
+        room: undefined,
+    };
 
 window.onload = () => {
     FlexDoc.build(document.body, true, [[0, 0, 0, 50, 50], [[75, 25], [50, 50]]]);
@@ -29,20 +35,27 @@ window.onload = () => {
         const numFloors = config['layout']['floors'].length,
             btnContainer = document.createElement('div'),
             down = new JBtn('<', () => { showFloor(-1); }, btnContainer, 'Go down one floor.'),
-            up = new JBtn('>', () => { showFloor(1); }, btnContainer, 'Go up one floor.');
+            up = new JBtn('>', () => { showFloor(1); }, btnContainer, 'Go up one floor.'),
+            floorName = document.createElement('span');
         btnContainer.setAttribute('class', 'floorPlanControls');
+        btnContainer.appendChild(floorName);
         FlexDoc.getLeaf(5).style.position = 'relative';
         FlexDoc.getLeaf(5).appendChild(btnContainer);
         // Generate floor plan
         const FP = new FloorPlan(FlexDoc.getLeaf(5));
+        REST.get('data/room.json', room => {
+            data.room = room;
+            console.log(data);
+        });
         showFloor = delta => {
             currentFloor += delta;
             (currentFloor > 0) ? down.enable() : down.disable();
             (currentFloor < numFloors - 1) ? up.enable() : up.disable();
+            floorName.textContent = config['layout']['floors'][currentFloor]['name'];
             FP.clear();
+            showRoom(FlexDoc.getLeaf(6));
             for (let room of config['layout']['floors'][currentFloor]['rooms']) {
-                const floorName = config['layout']['floors'][currentFloor]['name'];
-                FP.addRoom(room['data'], () => FlexDoc.getLeaf(6).textContent = floorName + ' / ' + room['name']);
+                FP.addRoom(room['data'], () => showRoom(FlexDoc.getLeaf(6), room['name']));
             }
         };
         showFloor(0);
@@ -166,5 +179,32 @@ function generateNewspaper(parent, name, news) {
         external.setAttribute('href', article['url']);
         internal.addEventListener('click', () => showArticle(article));
         NP.addData([internal, external]);
+    }
+}
+
+/**
+ * Show room details in the parent element.
+ * @param {HTMLElement} parent The containing element.
+ * @param {string} name The name of the room from the configuration file. If left blank, will show a default message.
+ */
+function showRoom(parent, name) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+    if (name) {
+        const CL = new Checklist(parent, list => {
+            data.room[name] = list
+            REST.post('data/room.json', data.room, r => console.log(r));
+        }, name);
+        // No list has been created yet for this room
+        if (!Array.isArray(data.room[name])) {
+            data.room[name] = [];
+        }
+        // Add any pre-existing items from this room
+        for (let item of data.room[name]) {
+            CL.addItem(item);
+        }
+    } else {
+        parent.textContent = 'Click on a room in the floor plan to view details!';
     }
 }

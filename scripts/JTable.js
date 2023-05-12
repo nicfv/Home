@@ -11,9 +11,10 @@ export class JTable {
         parent.appendChild(this.table);
     }
     /**
-     * @private Add a row of data to the table.
+     * @protected Add a row of data to the table.
      * @param {any[]} data Table row data - can be of type `string` or `HTMLElement`
      * @param {'th'|'td'} type Header or data
+     * @returns The row last created
      */
     addRow(data, type) {
         const row = document.createElement('tr');
@@ -30,6 +31,7 @@ export class JTable {
         }
         this.table.appendChild(row);
         this.table.setAttribute('jt', 'jtable');
+        return row;
     }
     /**
      * Add a row of headers to the table.

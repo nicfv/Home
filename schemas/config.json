@@ -63,7 +63,7 @@
                                 "type": "string"
                             },
                             "rooms": {
-                                "description": "",
+                                "description": "Define data associated with each room.",
                                 "type": "array",
                                 "items": {
                                     "properties": {

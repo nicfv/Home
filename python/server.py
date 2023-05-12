@@ -1,7 +1,8 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import json
+from python.setup import TARGET_DIR, TARGET_FILES
 
-ALLOWED_POST = ['/data/shop.json', '/data/todo.json']
+ALLOWED_POST = ['/' + TARGET_DIR + '/' + f for f in TARGET_FILES]
 
 
 class RequestHandler(SimpleHTTPRequestHandler):
