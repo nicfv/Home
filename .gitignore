@@ -1,4 +1,4 @@
-/config.json
-collected
-data
+client/config.json
+client/api
+client/data
 __pycache__

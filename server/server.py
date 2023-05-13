@@ -1,13 +1,14 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import json
-from python.setup import TARGET_DIR, TARGET_FILE
-
-ALLOWED_POST = '/' + TARGET_DIR + '/' + TARGET_FILE
+from server.setup import DIR_CLIENT, REL_FILE_ROOM
 
 
 class RequestHandler(SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=DIR_CLIENT, **kwargs)
+
     def do_POST(self):
-        if self.path in ALLOWED_POST:
+        if self.path[1:] in REL_FILE_ROOM:
             payload = json.loads(self.rfile.read(
                 int(self.headers.get('Content-Length'))))
             with open(self.path[1:], 'w') as f:

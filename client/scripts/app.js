@@ -54,9 +54,9 @@ window.onload = () => {
         });
         showCustom(FlexDoc.getLeaf(3), config['custom']);
     });
-    REST.get('collected/news-local.json', news => generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news));
-    REST.get('collected/news-national.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'National News', news));
-    REST.get('collected/weather.json', weather => {
+    REST.get('api/news-local.json', news => generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news));
+    REST.get('api/news-national.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'National News', news));
+    REST.get('api/weather.json', weather => {
         const dt_date = document.createElement('div'),
             dt_clock = document.createElement('div'),
             coords = weather['coord']['lat'] + ',' + weather['coord']['lon'],
