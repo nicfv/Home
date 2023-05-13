@@ -10,7 +10,7 @@ FILE_CONFIG = 'config.json'
 FILE_ROOM = 'room.json'
 FILE_LOCAL = 'news-local.json'
 FILE_NATIONAL = 'news-national.json'
-FILE_WEATHER = 'news-national.json'
+FILE_WEATHER = 'weather.json'
 
 
 REL_FILE_ROOM = os.path.join(DIR_DATA, FILE_ROOM)
