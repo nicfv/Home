@@ -1,36 +1,41 @@
 import requests
 import json
 import time
-import os
+from server.setup import ABS_FILE_CONFIG, ABS_FILE_LOCAL, ABS_FILE_NATIONAL, ABS_FILE_WEATHER
 
-TARGET_DIR = 'collected'
+WEATHER_API = ''
+NEWS_API = ''
+CITY = ''
+COUNTRY = ''
+ADDR = ''
 
-with open('config.json', 'r') as f:
-    config = json.load(f)
 
-os.makedirs(TARGET_DIR, exist_ok=True)
+def readConfig():
+    global WEATHER_API, NEWS_API, CITY, COUNTRY, ADDR
+    with open(ABS_FILE_CONFIG, 'r') as f:
+        config = json.load(f)
 
-WEATHER_API = config.get('api').get('weather')
-NEWS_API = config.get('api').get('news')
+    WEATHER_API = config.get('api').get('weather')
+    NEWS_API = config.get('api').get('news')
 
-CITY = config.get('address').get('city')
-STATE = config.get('address').get('state')
-COUNTRY = config.get('address').get('country')
+    CITY = config.get('address').get('city')
+    STATE = config.get('address').get('state')
+    COUNTRY = config.get('address').get('country')
 
-ADDR = ','.join(filter(lambda x: x != None, [CITY, STATE, COUNTRY]))
+    ADDR = ','.join(filter(lambda x: x != None, [CITY, STATE, COUNTRY]))
 
 
 def getLocalNews():
     r = requests.get('https://newsapi.org/v2/everything?q=' +
                      CITY + '&sortBy=publishedAt&language=en&apiKey=' + NEWS_API)
-    with open(TARGET_DIR + '/news-local.json', 'w') as f:
+    with open(ABS_FILE_LOCAL, 'w') as f:
         f.write(r.text)
 
 
 def getNationalNews():
     r = requests.get('https://newsapi.org/v2/top-headlines?country=' +
                      COUNTRY + '&apiKey=' + NEWS_API)
-    with open(TARGET_DIR + '/news-national.json', 'w') as f:
+    with open(ABS_FILE_NATIONAL, 'w') as f:
         f.write(r.text)
 
 
@@ -42,7 +47,7 @@ def getWeather():
     lon = geo[0]['lon']
     r = requests.get('https://api.openweathermap.org/data/2.5/weather?lat=' +
                      str(lat) + '&lon=' + str(lon) + '&appid=' + WEATHER_API)
-    with open(TARGET_DIR + '/weather.json', 'w') as f:
+    with open(ABS_FILE_WEATHER, 'w') as f:
         f.write(r.text)
 
 

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/schema",
     "type": "object",
     "patternProperties": {
-        "^[^$].+": {
+        "^[^$].*": {
             "type": "array",
             "description": "Contains notes about the specified room.",
             "items": {
