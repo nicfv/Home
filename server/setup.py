@@ -41,7 +41,6 @@ def makeFiles():
     if os.path.exists(ABS_FILE_PASSWORD):
         with open(ABS_FILE_PASSWORD, 'r') as f:
             PASSWORD = f.read()
-        print(PASSWORD)
     else:
         with open(ABS_FILE_PASSWORD, 'w') as f:
             f.write(PASSWORD)
