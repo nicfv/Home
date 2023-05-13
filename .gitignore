@@ -1,4 +1,5 @@
 client/config.json
 client/api
 client/data
+server/password.txt
 __pycache__
