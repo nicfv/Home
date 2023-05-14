@@ -16,7 +16,6 @@ window.onload = () => {
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
     REST.get('config.json', config => {
-        console.log(config);
         document.title = config['address']['street'];
         const root = document.querySelector(':root');
         // Set color preference

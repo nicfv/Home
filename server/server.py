@@ -23,12 +23,9 @@ class RequestHandler(SimpleHTTPRequestHandler):
             del config_data['password']
             del config_data['api']
             self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps(config_data).encode('utf-8'))
+            self.wfile.write(json.dumps(config_data).encode())
         elif self.path[1:] in SERVED_FILES:
-            # self.path = SERVED_FILES[self.path[1:]]
-            # return SimpleHTTPRequestHandler.do_GET(self)
             self.send_response(200)
             self.end_headers()
             with open(SERVED_FILES[self.path[1:]]) as f:
@@ -44,7 +41,6 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 with open(ABS_FILE_ROOM, 'w') as f:
                     json.dump(payload, f)
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(b'{"status":200}')
             elif self.path[1:] == 'config':
@@ -58,17 +54,15 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps(config_data).encode('utf-8'))
             else:
                 self.send_response(400)
-                self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(b'{"status":400}')
         else:
             self.send_response(401)
-            self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(b'{"status":401}')
 
 
-def startServer(port: int = 8080):
+def startServer(port: int = 8000):
     global PASSWORD
     with open(ABS_FILE_CONFIG) as f:
         PASSWORD = json.load(f).get('password')

@@ -7,6 +7,9 @@ def checkJSON(path: str) -> bool:
         with open(path) as f:
             content = json.load(f)
         schemaPath = content.get('$schema')
+        if not schemaPath:
+            print('No schema defined in ' + path)
+            return False
         with open(schemaPath) as f:
             schema = json.load(f)
         validate(content, schema)
