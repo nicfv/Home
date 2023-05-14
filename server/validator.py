@@ -1,25 +1,16 @@
-from server.setup import ABS_FILE_CONFIG, ABS_FILE_ROOM, ABS_FILE_SCHEMA_CONFIG, ABS_FILE_SCHEMA_ROOM
 from jsonschema import validate
 import json
 
 
-def checkJSON() -> bool:
-    with open(ABS_FILE_CONFIG) as f:
-        config = json.load(f)
-    with open(ABS_FILE_SCHEMA_CONFIG) as f:
-        configschema = json.load(f)
-    with open(ABS_FILE_ROOM) as f:
-        room = json.load(f)
-    with open(ABS_FILE_SCHEMA_ROOM) as f:
-        roomschema = json.load(f)
+def checkJSON(path: str) -> bool:
     try:
-        validate(config, configschema)
+        with open(path) as f:
+            content = json.load(f)
+        schemaPath = content.get('$schema')
+        with open(schemaPath) as f:
+            schema = json.load(f)
+        validate(content, schema)
     except Exception as e:
-        print('Error in ' + ABS_FILE_CONFIG + ': ' + e.message)
-        return False
-    try:
-        validate(room, roomschema)
-    except Exception as e:
-        print('Error in ' + ABS_FILE_ROOM + ': ' + e.message)
+        print('Error in ' + path + ': ' + e.message)
         return False
     return True

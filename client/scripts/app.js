@@ -15,7 +15,7 @@ window.onload = () => {
     FlexDoc.getBranch(1).style.width = 'max-content';
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
-    REST.post('config', undefined, config => {
+    REST.get('config.json', config => {
         console.log(config);
         document.title = config['address']['street'];
         const root = document.querySelector(':root');
@@ -39,7 +39,7 @@ window.onload = () => {
         FlexDoc.getLeaf(4).appendChild(btnContainer);
         // Generate floor plan
         const FP = new FloorPlan(FlexDoc.getLeaf(4));
-        REST.get('data/room.json', roomData => {
+        REST.get('room.json', roomData => {
             showFloor = delta => {
                 currentFloor += delta;
                 (currentFloor > 0) ? down.enable() : down.disable();
@@ -55,9 +55,9 @@ window.onload = () => {
         });
         showCustom(FlexDoc.getLeaf(3), config['custom']);
     });
-    REST.get('api/news-local.json', news => generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news));
-    REST.get('api/news-national.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'National News', news));
-    REST.get('api/weather.json', weather => {
+    REST.get('news-local.json', news => generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news));
+    REST.get('news-national.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'National News', news));
+    REST.get('weather.json', weather => {
         const dt_date = document.createElement('div'),
             dt_clock = document.createElement('div'),
             coords = weather['coord']['lat'] + ',' + weather['coord']['lon'],
@@ -186,7 +186,7 @@ function showRoom(parent, name, data) {
     if (name) {
         const CL = new Checklist(parent, list => {
             data[name] = list
-            REST.post('data/room.json', data, console.log);
+            REST.post('room.json', data, console.log);
         }, name);
         // No list has been created yet for this room
         if (!Array.isArray(data[name])) {
