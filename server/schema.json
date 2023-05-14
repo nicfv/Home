@@ -128,6 +128,12 @@
                         "description": "The relative source file path or URL of the JSON data file.",
                         "type": "string"
                     },
+                    "interval": {
+                        "description": "The interval in minutes of requesting data.",
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 60
+                    },
                     "fields": {
                         "description": "Define one or multiple data fields to display from this data source.",
                         "type": "array",
@@ -153,6 +159,7 @@
                 },
                 "required": [
                     "source",
+                    "interval",
                     "fields"
                 ]
             }

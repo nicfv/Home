@@ -49,9 +49,8 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 del config_data['password']
                 del config_data['api']
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps(config_data).encode('utf-8'))
+                self.wfile.write(json.dumps(config_data).encode())
             else:
                 self.send_response(400)
                 self.end_headers()

@@ -1,17 +1,18 @@
 import requests
 import json
 import time
-from server.setup import ABS_FILE_CONFIG, ABS_FILE_LOCAL, ABS_FILE_NATIONAL, ABS_FILE_WEATHER
+from server.setup import ABS_FILE_CONFIG, ABS_FILE_LOCAL, ABS_FILE_NATIONAL, ABS_FILE_WEATHER, ABS_FILE_CUSTOM
 
 WEATHER_API = ''
 NEWS_API = ''
 CITY = ''
 COUNTRY = ''
 ADDR = ''
+CUSTOM = {}
 
 
 def readConfig():
-    global WEATHER_API, NEWS_API, CITY, COUNTRY, ADDR
+    global WEATHER_API, NEWS_API, CITY, COUNTRY, ADDR, CUSTOM
     with open(ABS_FILE_CONFIG, 'r') as f:
         config = json.load(f)
 
@@ -23,6 +24,19 @@ def readConfig():
     COUNTRY = config.get('address').get('country')
 
     ADDR = ','.join(filter(lambda x: x != None, [CITY, STATE, COUNTRY]))
+
+    CUSTOM = config.get('custom')
+
+
+def extract(obj: dict, path: str):
+    extracted = obj
+    parts = path.split('.')
+    for part in parts:
+        if part.isnumeric():
+            extracted = extracted[int(part)]
+        else:
+            extracted = extracted[part]
+    return extracted
 
 
 def getLocalNews():
@@ -51,6 +65,29 @@ def getWeather():
         f.write(r.text)
 
 
+def getCustom(tick: int, dry: bool):
+    with open(ABS_FILE_CUSTOM) as f:
+        CUST_DATA = json.load(f)
+    for req in CUSTOM:
+        if (tick % req['interval']) == 0:
+            log('Getting custom data from ' + req['source'] + '...')
+            if dry:
+                return
+            sourceId = hash(req['source']) # TODO: for some reason, sometimes creates duplicate keys
+            CUST_DATA[sourceId] = []
+            data = json.loads(requests.get(req['source']).text)
+            for field in req['fields']:
+                CUST_DATA[sourceId].append(
+                    {'label': field['label'], 'value': extract(data, field['value'])})
+    with open(ABS_FILE_CUSTOM, 'w') as f:
+        json.dump(CUST_DATA, f)
+
+
+def clearCustom():
+    with open(ABS_FILE_CUSTOM, 'w') as f:
+        f.write('{ }')
+
+
 def log(message: str):
     print('[' + time.strftime('%T') + '] ' + message)
 
@@ -65,5 +102,8 @@ def routine(tick: int = 0, dry: bool = False):
         if not dry:
             getLocalNews()
             getNationalNews()
+    if tick == 0:
+        clearCustom()
+    getCustom(tick, dry)
     time.sleep(60)
     routine((tick+1) % 60, dry)
