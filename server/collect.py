@@ -25,7 +25,7 @@ def readConfig():
 
     ADDR = ','.join(filter(lambda x: x != None, [CITY, STATE, COUNTRY]))
 
-    CUSTOM = config.get('custom')
+    CUSTOM = config.get('custom') or CUSTOM
 
 
 def extract(obj: dict, path: str):

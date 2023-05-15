@@ -52,7 +52,6 @@ window.onload = () => {
             };
             showFloor(0);
         });
-        showCustom(FlexDoc.getLeaf(3), config['custom']);
     });
     REST.get('news-local.json', news => generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news));
     REST.get('news-national.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'National News', news));
@@ -107,6 +106,7 @@ window.onload = () => {
             dt_clock.textContent = now.toLocaleTimeString();
         }, 1000);
     });
+    REST.get('custom.json', custom => showCustom(FlexDoc.getLeaf(3), custom));
 };
 
 /**
@@ -203,24 +203,18 @@ function showRoom(parent, name, data) {
 /**
  * Show the custom panel.
  * @param {HTMLElement} parent The parent element to append the custom panel onto
- * @param {object} customData The custom data from the configuration JSON file
+ * @param {object} customData The custom data in JSON format
  */
 function showCustom(parent, customData) {
     parent.style.overflow = 'auto';
-    const JT = new JTable(parent),
-        header = document.createElement('div');
-    JT.addHeaders([header]);
-    header.textContent = 'Custom';
-    if (Array.isArray(customData)) {
+    const JT = new JTable(parent);
+    for (let source in customData) {
+        const header = document.createElement('div');
+        JT.addHeaders([header]);
+        header.textContent = source;
         header.parentElement.setAttribute('colspan', '2');
-        for (let datasource of customData) {
-            REST.get(datasource['source'], data => {
-                for (let field of datasource['fields']) {
-                    JT.addData([field['label'], '' + JPath.get(field['value'], data)]);
-                }
-            });
+        for (let field of customData[source]) {
+            JT.addData([field['label'], field['value']]);
         }
-    } else {
-        JT.addData(['No custom datasources found.']);
     }
 }
