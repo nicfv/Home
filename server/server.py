@@ -35,7 +35,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         if self.headers.get('password') == PASSWORD:
-            if self.path[1:] == 'room':
+            if self.path[1:] == FILE_ROOM:
                 payload = json.loads(self.rfile.read(
                     int(self.headers.get('Content-Length'))))
                 with open(ABS_FILE_ROOM, 'w') as f:
@@ -43,14 +43,6 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(b'{"status":200}')
-            elif self.path[1:] == 'config':
-                with open(ABS_FILE_CONFIG) as f:
-                    config_data = json.load(f)
-                del config_data['password']
-                del config_data['api']
-                self.send_response(200)
-                self.end_headers()
-                self.wfile.write(json.dumps(config_data).encode())
             else:
                 self.send_response(400)
                 self.end_headers()
