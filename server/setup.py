@@ -28,9 +28,6 @@ def makeFiles():
     if not os.path.exists(ABS_FILE_ROOM):
         with open(ABS_FILE_ROOM, 'w') as f:
             f.write('{ }')
-    if not os.path.exists(ABS_FILE_CUSTOM):
-        with open(ABS_FILE_CUSTOM, 'w') as f:
-            f.write('{ }')
     if not os.path.exists(ABS_FILE_CONFIG):
         with open(ABS_FILE_CONFIG, 'w') as f:
             f.write('{ "$schema": "' + ABS_FILE_SCHEMA + '" }')
