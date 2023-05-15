@@ -10,7 +10,7 @@ import { Checklist } from './Checklist.js';
 
 window.onload = () => {
     let currentFloor = 0;
-    FlexDoc.build(document.body, true, [[0, 0, 0, 100], [[75, 25], [50, 50]]]);
+    FlexDoc.build(document.body, true, [[0, 0, 0, 100, 0], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'min-content';
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
@@ -24,6 +24,8 @@ window.onload = () => {
             root.style.setProperty('--green', +('0x' + pref.substring(3, 5)));
             root.style.setProperty('--blue', +('0x' + pref.substring(5, 7)));
         }
+        // Show version number
+        FlexDoc.getLeaf(4).textContent = 'Version ' + config['version'];
         // Add floor plan controls
         let showFloor = () => { };
         const numFloors = config['layout']['floors'].length,
@@ -33,10 +35,10 @@ window.onload = () => {
             floorName = document.createElement('span');
         btnContainer.setAttribute('class', 'floorPlanControls');
         btnContainer.appendChild(floorName);
-        FlexDoc.getLeaf(4).style.position = 'relative';
-        FlexDoc.getLeaf(4).appendChild(btnContainer);
+        FlexDoc.getLeaf(5).style.position = 'relative';
+        FlexDoc.getLeaf(5).appendChild(btnContainer);
         // Generate floor plan
-        const FP = new FloorPlan(FlexDoc.getLeaf(4));
+        const FP = new FloorPlan(FlexDoc.getLeaf(5));
         REST.get('room.json', roomData => {
             showFloor = delta => {
                 currentFloor += delta;
@@ -44,16 +46,17 @@ window.onload = () => {
                 (currentFloor < numFloors - 1) ? up.enable() : up.disable();
                 floorName.textContent = config['layout']['floors'][currentFloor]['name'];
                 FP.clear();
-                showRoom(FlexDoc.getLeaf(5));
+                showRoom(FlexDoc.getLeaf(6));
                 for (let room of config['layout']['floors'][currentFloor]['rooms']) {
-                    FP.addRoom(room['data'], () => showRoom(FlexDoc.getLeaf(5), room['name'], roomData));
+                    FP.addRoom(room['data'], () => showRoom(FlexDoc.getLeaf(6), room['name'], roomData));
                 }
             };
             showFloor(0);
         });
+
     });
-    REST.get('news-local.json', news => generateNewspaper(FlexDoc.getLeaf(6), 'Local News', news));
-    REST.get('news-national.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'National News', news));
+    REST.get('news-local.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'Local News', news));
+    REST.get('news-national.json', news => generateNewspaper(FlexDoc.getLeaf(8), 'National News', news));
     REST.get('weather.json', weather => {
         const dt_date = document.createElement('div'),
             dt_clock = document.createElement('div'),

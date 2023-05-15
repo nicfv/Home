@@ -1,6 +1,7 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import json
-from server.setup import DIR_CLIENT, FILE_CONFIG, ABS_FILE_CONFIG, FILE_ROOM, ABS_FILE_ROOM, FILE_LOCAL, ABS_FILE_LOCAL, FILE_NATIONAL, ABS_FILE_NATIONAL, FILE_WEATHER, ABS_FILE_WEATHER, FILE_CUSTOM, ABS_FILE_CUSTOM
+import re
+from server.setup import DIR_CLIENT, FILE_CONFIG, ABS_FILE_CONFIG, FILE_ROOM, ABS_FILE_ROOM, FILE_LOCAL, ABS_FILE_LOCAL, FILE_NATIONAL, ABS_FILE_NATIONAL, FILE_WEATHER, ABS_FILE_WEATHER, FILE_CUSTOM, ABS_FILE_CUSTOM, ABS_FILE_CHANGE
 
 PASSWORD = ''
 
@@ -23,6 +24,9 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 config_data = json.load(f)
             del config_data['password']
             del config_data['api']
+            with open(ABS_FILE_CHANGE) as f:
+                version = re.search('[0-9]+\.[0-9]+\.[0-9]+', f.read()).group()
+            config_data['version'] = version
             self.send_response(200)
             self.end_headers()
             self.wfile.write(json.dumps(config_data).encode())
