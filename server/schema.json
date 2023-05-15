@@ -124,6 +124,10 @@
                 "description": "Define a data source for the custom panel.",
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "description": "The name of the custom datasource.",
+                        "type": "string"
+                    },
                     "source": {
                         "description": "The relative source file path or URL of the JSON data file.",
                         "type": "string"
@@ -158,6 +162,7 @@
                     }
                 },
                 "required": [
+                    "name",
                     "source",
                     "interval",
                     "fields"

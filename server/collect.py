@@ -66,14 +66,17 @@ def getWeather():
 
 
 def getCustom(tick: int, dry: bool):
-    with open(ABS_FILE_CUSTOM) as f:
-        CUST_DATA = json.load(f)
+    if tick == 0:
+        CUST_DATA = {}
+    else:
+        with open(ABS_FILE_CUSTOM) as f:
+            CUST_DATA = json.load(f)
     for req in CUSTOM:
         if (tick % req['interval']) == 0:
-            log('Getting custom data from ' + req['source'] + '...')
+            log('Getting custom data from ' + req['name'] + '...')
             if dry:
                 return
-            sourceId = str(hash(req['source']))
+            sourceId = req['name']
             CUST_DATA[sourceId] = []
             data = json.loads(requests.get(req['source']).text)
             for field in req['fields']:
@@ -81,11 +84,6 @@ def getCustom(tick: int, dry: bool):
                     {'label': field['label'], 'value': extract(data, field['value'])})
     with open(ABS_FILE_CUSTOM, 'w') as f:
         json.dump(CUST_DATA, f)
-
-
-def clearCustom():
-    with open(ABS_FILE_CUSTOM, 'w') as f:
-        f.write('{ }')
 
 
 def log(message: str):
@@ -102,8 +100,6 @@ def routine(tick: int = 0, dry: bool = False):
         if not dry:
             getLocalNews()
             getNationalNews()
-    if tick == 0:
-        clearCustom()
     getCustom(tick, dry)
     time.sleep(60)
     routine((tick+1) % 60, dry)
