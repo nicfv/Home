@@ -73,7 +73,7 @@ def getCustom(tick: int, dry: bool):
             log('Getting custom data from ' + req['source'] + '...')
             if dry:
                 return
-            sourceId = hash(req['source']) # TODO: for some reason, sometimes creates duplicate keys
+            sourceId = str(hash(req['source']))
             CUST_DATA[sourceId] = []
             data = json.loads(requests.get(req['source']).text)
             for field in req['fields']:
