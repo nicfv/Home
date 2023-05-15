@@ -7,12 +7,11 @@ import { JBtn } from './JBtn.js';
 import { UnitSwitcher } from './UnitSwitcher.js';
 import { FloorPlan } from './FloorPlan.js';
 import { Checklist } from './Checklist.js';
-import { JPath } from './JPath.js';
 
 window.onload = () => {
     let currentFloor = 0;
     FlexDoc.build(document.body, true, [[0, 0, 0, 100], [[75, 25], [50, 50]]]);
-    FlexDoc.getBranch(1).style.width = 'max-content';
+    FlexDoc.getBranch(1).style.width = 'min-content';
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
     REST.get('config.json', config => {
