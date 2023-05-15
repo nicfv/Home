@@ -38,11 +38,6 @@ a:active {
     color: red;
 }
 
-th {
-    position: sticky;
-    top: 0;
-}
-
 img {
     display: block;
     max-width: 100%;
