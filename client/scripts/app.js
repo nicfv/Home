@@ -216,7 +216,7 @@ function showCustom(parent, customData) {
         header.textContent = source;
         header.parentElement.setAttribute('colspan', '2');
         for (let field of customData[source]) {
-            JT.addData([field['label'], field['value']]);
+            JT.addData([field['label'], '' + field['value']]);
         }
     }
 }
