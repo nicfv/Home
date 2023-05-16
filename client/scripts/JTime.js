@@ -6,7 +6,7 @@ export class JTime {
     static parse(t) {
         t = Math.abs(t);
         return {
-            s: t % 60,
+            s: Math.floor(t) % 60,
             m: Math.floor(t / 60) % 60,
             h: Math.floor(t / (60 * 60)) % (60 * 60),
             d: Math.floor(t / (60 * 60 * 24)) % (60 * 60 * 24),
@@ -34,9 +34,9 @@ export class JTime {
      * @returns Human readable timestamp
      */
     static timestampToString(t) {
-        if (t.toString().length <= 10) {
+        if (t.toString().length <= 10) { // Seconds (Unix time)
             t *= 1000;
-        } else if (t.toString().length >= 16) {
+        } else if (t.toString().length >= 16) { // Milliseconds
             t /= 1000;
         }
         return new Date(t).toLocaleString();
