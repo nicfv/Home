@@ -81,7 +81,7 @@ def getCustom(tick: int, dry: bool):
             data = json.loads(requests.get(req['source']).text)
             for field in req['fields']:
                 CUST_DATA[sourceId].append(
-                    {'label': field['label'], 'value': extract(data, field['value'])})
+                    {'label': field['label'], 'type': field['type'], 'value': extract(data, field['value'])})
     with open(ABS_FILE_CUSTOM, 'w') as f:
         json.dump(CUST_DATA, f)
 

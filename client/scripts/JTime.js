@@ -28,4 +28,17 @@ export class JTime {
         }
         return formatted;
     }
+    /**
+     * Convert a timestamp to a human readable string.
+     * @param {number} t Unix timestamp
+     * @returns Human readable timestamp
+     */
+    static timestampToString(t) {
+        if (t.toString().length <= 10) {
+            t *= 1000;
+        } else if (t.toString().length >= 16) {
+            t /= 1000;
+        }
+        return new Date(t).toLocaleString();
+    }
 }

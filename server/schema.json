@@ -152,11 +152,21 @@
                                 "value": {
                                     "description": "Input a valid JSON path to obtain a data value.",
                                     "type": "string"
+                                },
+                                "type": {
+                                    "description": "Define the expected return type of data obtained by the JSON path.",
+                                    "enum": [
+                                        "string",
+                                        "number",
+                                        "timestamp",
+                                        "duration"
+                                    ]
                                 }
                             },
                             "required": [
                                 "label",
-                                "value"
+                                "value",
+                                "type"
                             ]
                         }
                     }

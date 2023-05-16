@@ -216,7 +216,32 @@ function showCustom(parent, customData) {
         header.textContent = source;
         header.parentElement.setAttribute('colspan', '2');
         for (let field of customData[source]) {
-            JT.addData([field['label'], '' + field['value']]);
+            /**
+             * @type {string}
+             */
+            let formattedValue;
+            switch (field['type']) {
+                case ('string'): {
+                    formattedValue = '' + field['value'];
+                    break;
+                }
+                case ('number'): {
+                    formattedValue = (+field['value']).toLocaleString()
+                    break;
+                }
+                case ('timestamp'): {
+                    formattedValue = JTime.format(+field['value']);
+                    break;
+                }
+                case ('duration'): {
+                    formattedValue = JTime.format(+field['value']);
+                    break;
+                }
+                default: {
+                    throw new Error('Missing or incorrect field type found in ' + source + ' ' + field['name']);
+                }
+            }
+            JT.addData([field['label'], formattedValue]);
         }
     }
 }
