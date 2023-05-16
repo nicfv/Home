@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "password": {
-            "description": "Create a server password, required to make POST requests.",
+            "description": "Optionally create a server password.",
             "type": "string"
         },
         "api": {
@@ -181,7 +181,6 @@
         }
     },
     "required": [
-        "password",
         "api",
         "address",
         "layout"

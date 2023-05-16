@@ -9,6 +9,15 @@ import { FloorPlan } from './FloorPlan.js';
 import { Checklist } from './Checklist.js';
 
 window.onload = () => {
+    REST.get('locked', locked => {
+        if (locked) {
+            REST.requestPassword();
+        }
+        main();
+    });
+};
+
+function main() {
     let currentFloor = 0;
     FlexDoc.build(document.body, true, [[0, 0, 0, 100, 0], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'min-content';
@@ -109,7 +118,7 @@ window.onload = () => {
         }, 1000);
     });
     REST.get('custom.json', custom => showCustom(FlexDoc.getLeaf(3), custom));
-};
+}
 
 /**
  * Generate a digital newspaper.

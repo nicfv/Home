@@ -9,7 +9,7 @@ export class REST {
      * @param {(json) => any} callback The callback function upon successful execution
      */
     static get(url, callback) {
-        fetch(url).then(response => response.json()).then(jsonData => callback(jsonData));
+        fetch(url, { 'headers': [['Authorization', this.password]] }).then(response => response.json()).then(jsonData => callback(jsonData));
     }
 
     /**
@@ -22,8 +22,14 @@ export class REST {
         fetch(url, {
             'method': 'POST',
             'body': JSON.stringify(payload),
-            'headers': [['password', this.password = this.password ?? prompt('Please enter the server password.')]]
+            'headers': [['Authorization', this.password]]
         }).then(response => response.json())
             .then(jsonData => callback(jsonData));
+    }
+    /**
+     * Prompt the user to enter the server password.
+     */
+    static requestPassword() {
+        this.password = prompt('Please enter the server password.');
     }
 }

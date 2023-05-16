@@ -18,47 +18,59 @@ class RequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIR_CLIENT, **kwargs)
 
-    def do_GET(self):
+    def do_GET(self) -> None:
         if self.path[1:] == FILE_CONFIG:
-            with open(ABS_FILE_CONFIG) as f:
-                config_data = json.load(f)
-            del config_data['password']
-            del config_data['api']
-            with open(ABS_FILE_CHANGE) as f:
-                version = re.search('[0-9]+\.[0-9]+\.[0-9]+', f.read()).group()
-            config_data['version'] = version
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(json.dumps(config_data).encode())
+            if self.check_password():
+                with open(ABS_FILE_CONFIG) as f:
+                    config_data = json.load(f)
+                config_data.pop('password', None)
+                config_data.pop('api', None)
+                config_data.pop('custom', None)
+                with open(ABS_FILE_CHANGE) as f:
+                    version = re.search(
+                        '[0-9]+\.[0-9]+\.[0-9]+', f.read()).group()
+                config_data['version'] = version
+                self.send_text(json.dumps(config_data))
+            else:
+                self.send_status(401)
         elif self.path[1:] in SERVED_FILES:
-            self.send_response(200)
-            self.end_headers()
-            with open(SERVED_FILES[self.path[1:]]) as f:
-                self.wfile.write(f.read().encode())
+            if self.check_password():
+                with open(SERVED_FILES[self.path[1:]]) as f:
+                    self.send_text(f.read())
+            else:
+                self.send_status(401)
+        elif self.path[1:] == 'locked':
+            self.send_text(str(bool(PASSWORD)).lower())
         else:
             return SimpleHTTPRequestHandler.do_GET(self)
 
-    def do_POST(self):
-        if self.headers.get('password') == PASSWORD:
+    def do_POST(self) -> None:
+        if self.check_password():
             if self.path[1:] == FILE_ROOM:
                 payload = json.loads(self.rfile.read(
                     int(self.headers.get('Content-Length'))))
                 with open(ABS_FILE_ROOM, 'w') as f:
                     json.dump(payload, f)
-                self.send_response(200)
-                self.end_headers()
-                self.wfile.write(b'{"status":200}')
+                self.send_status(200)
             else:
-                self.send_response(400)
-                self.end_headers()
-                self.wfile.write(b'{"status":400}')
+                self.send_status(400)
         else:
-            self.send_response(401)
-            self.end_headers()
-            self.wfile.write(b'{"status":401}')
+            self.send_status(401)
+
+    def check_password(self) -> bool:
+        return (not bool(PASSWORD)) or self.headers.get('Authorization') == PASSWORD
+
+    def send_status(self, status: int) -> None:
+        self.send_response(status)
+        self.end_headers()
+
+    def send_text(self, text: str) -> None:
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(text.encode())
 
 
-def startServer(port: int = 8000):
+def startServer(port: int = 8000) -> None:
     global PASSWORD
     with open(ABS_FILE_CONFIG) as f:
         PASSWORD = json.load(f).get('password')
