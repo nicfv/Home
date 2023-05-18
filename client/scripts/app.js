@@ -20,7 +20,7 @@ window.onload = () => {
 function main() {
     let currentFloor = 0,
         unitSystem = '';
-    FlexDoc.build(document.body, true, [[0, 0, 0, 100, 0], [[75, 25], [50, 50]]]);
+    FlexDoc.build(document.body, true, [[0, 0, 0, 0, 100, 0], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'min-content';
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
@@ -35,7 +35,7 @@ function main() {
             root.style.setProperty('--blue', +('0x' + pref.substring(5, 7)));
         }
         // Show version number
-        FlexDoc.getLeaf(4).textContent = 'Version ' + config['version'];
+        FlexDoc.getLeaf(5).textContent = 'Version ' + config['version'];
         // Add floor plan controls
         let showFloor = () => { };
         const floors = Object.entries(config['floors']),
@@ -45,10 +45,10 @@ function main() {
             floorName = document.createElement('span');
         btnContainer.setAttribute('class', 'floorPlanControls');
         btnContainer.appendChild(floorName);
-        FlexDoc.getLeaf(5).style.position = 'relative';
-        FlexDoc.getLeaf(5).appendChild(btnContainer);
+        FlexDoc.getLeaf(6).style.position = 'relative';
+        FlexDoc.getLeaf(6).appendChild(btnContainer);
         // Generate floor plan
-        const FP = new FloorPlan(FlexDoc.getLeaf(5), !!config['preferences']?.['flip']?.['x'], !!config['preferences']?.['flip']?.['y']);
+        const FP = new FloorPlan(FlexDoc.getLeaf(6), !!config['preferences']?.['flip']?.['x'], !!config['preferences']?.['flip']?.['y']);
         REST.get('room.json', roomData => {
             showFloor = delta => {
                 currentFloor += delta;
@@ -56,17 +56,17 @@ function main() {
                 (currentFloor < floors.length - 1) ? up.enable() : up.disable();
                 floorName.textContent = floors[currentFloor][0];
                 FP.clear();
-                showRoom(FlexDoc.getLeaf(6));
+                showRoom(FlexDoc.getLeaf(7));
                 for (let room in floors[currentFloor][1]) {
-                    FP.addRoom(floors[currentFloor][1][room], () => showRoom(FlexDoc.getLeaf(6), room, roomData));
+                    FP.addRoom(floors[currentFloor][1][room], () => showRoom(FlexDoc.getLeaf(7), room, roomData));
                 }
             };
             showFloor(0);
         });
 
     });
-    REST.get('news-local.json', news => generateNewspaper(FlexDoc.getLeaf(7), 'Local News', news));
-    REST.get('news-national.json', news => generateNewspaper(FlexDoc.getLeaf(8), 'National News', news));
+    REST.get('news-local.json', news => generateNewspaper(FlexDoc.getLeaf(8), 'Local News', news));
+    REST.get('news-national.json', news => generateNewspaper(FlexDoc.getLeaf(9), 'National News', news));
     REST.get('weather.json', weather => {
         const dt_date = document.createElement('div'),
             dt_clock = document.createElement('div'),
@@ -128,7 +128,8 @@ function main() {
             dt_clock.textContent = now.toLocaleTimeString();
         }, 1000);
     });
-    REST.get('custom.json', custom => showCustom(FlexDoc.getLeaf(3), custom));
+    REST.get('traffic.json', traffic => showTraffic(FlexDoc.getLeaf(3), unitSystem, traffic));
+    REST.get('custom.json', custom => showCustom(FlexDoc.getLeaf(4), custom));
 }
 
 /**
@@ -220,6 +221,29 @@ function showRoom(parent, name, data) {
     } else {
         parent.textContent = 'Click on a room in the floor plan to view details!';
     }
+}
+
+/**
+ * Show commute details.
+ * @param {HTMLElement} parent The containing element.
+ * @param {'US'|'SI'} unitSystem The preferred unit system.
+ * @param {object} data The data object.
+ */
+function showTraffic(parent, unitSystem, data) {
+    const to_work = data['routes'][0]['legs'][0],
+        from_work = data['routes'][0]['legs'][1],
+        to_work_distance = new UnitSwitcher(to_work['distance'] / 1000, JMath.mtomi(to_work['distance']), 'km', 'mi'),
+        from_work_distance = new UnitSwitcher(from_work['distance'] / 1000, JMath.mtomi(from_work['distance']), 'km', 'mi');
+    if (unitSystem === 'US') {
+        to_work_distance.click();
+        from_work_distance.click();
+    }
+    JTable.build(parent, [
+        ['To work', new UnitSwitcher(JTime.format(to_work['duration']), (to_work['duration'] > to_work['duration_typical'] ? '+' : '-') + JTime.format(to_work['duration'] - to_work['duration_typical']), 'abs', 'rel').getElement()],
+        ['Distance', to_work_distance.getElement()],
+        ['From work', new UnitSwitcher(JTime.format(from_work['duration']), (from_work['duration'] > from_work['duration_typical'] ? '+' : '-') + JTime.format(from_work['duration'] - from_work['duration_typical']), 'abs', 'rel').getElement()],
+        ['Distance', from_work_distance.getElement()],
+    ], false);
 }
 
 /**
