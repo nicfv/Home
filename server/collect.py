@@ -1,7 +1,7 @@
 import requests
 import json
 import time
-from server.setup import ABS_FILE_CONFIG, ABS_FILE_LOCAL, ABS_FILE_NATIONAL, ABS_FILE_WEATHER, ABS_FILE_AIRPOLL, ABS_FILE_CUSTOM
+from server.setup import ABS_FILE_CONFIG, ABS_FILE_LOCAL, ABS_FILE_NATIONAL, ABS_FILE_WEATHER, ABS_FILE_AIRPOLL, ABS_FILE_TRAFFIC, ABS_FILE_CUSTOM
 
 WEATHER_API = ''
 NEWS_API = ''
@@ -63,6 +63,13 @@ def getWeather():
         f.write(r.text)
 
 
+def getTraffic():
+    r = requests.get('https://api.mapbox.com/directions/v5/mapbox/driving-traffic/' + str(
+        COORDS['home']['lon']) + '%2C' + str(COORDS['home']['lat']) + '%3B' + str(COORDS['work']['lon']) + '%2C' + str(COORDS['work']['lat']) + '%3B' + str(COORDS['home']['lon']) + '%2C' + str(COORDS['home']['lat']) + '?geometries=geojson&overview=false&steps=false&access_token=' + MAPS_API)
+    with open(ABS_FILE_TRAFFIC, 'w') as f:
+        f.write(r.text)
+
+
 def getCustom(tick: int, dry: bool):
     if tick == 0:
         CUST_DATA = {}
@@ -91,8 +98,10 @@ def log(message: str):
 def routine(dry: bool = False, tick: int = 0):
     if (tick % 5) == 0:
         log('Getting weather data...')
+        log('Getting traffic data...')
         if not dry:
             getWeather()
+            getTraffic()
     if (tick % 60) == 0:
         log('Getting news...')
         if not dry:
