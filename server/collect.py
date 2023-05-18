@@ -1,31 +1,29 @@
 import requests
 import json
 import time
-from server.setup import ABS_FILE_CONFIG, ABS_FILE_LOCAL, ABS_FILE_NATIONAL, ABS_FILE_WEATHER, ABS_FILE_CUSTOM
+from server.setup import ABS_FILE_CONFIG, ABS_FILE_LOCAL, ABS_FILE_NATIONAL, ABS_FILE_WEATHER, ABS_FILE_AIRPOLL, ABS_FILE_CUSTOM
 
 WEATHER_API = ''
 NEWS_API = ''
+MAPS_API = ''
+COORDS = {}
+CUSTOM = {}
+
 CITY = ''
 COUNTRY = ''
-ADDR = ''
-CUSTOM = {}
 
 
 def readConfig():
-    global WEATHER_API, NEWS_API, CITY, COUNTRY, ADDR, CUSTOM
+    global WEATHER_API, NEWS_API, MAPS_API, COORDS, CUSTOM
     with open(ABS_FILE_CONFIG, 'r') as f:
         config = json.load(f)
 
-    WEATHER_API = config.get('api').get('weather')
-    NEWS_API = config.get('api').get('news')
+    WEATHER_API = config['api']['weather']
+    NEWS_API = config['api']['news']
+    MAPS_API = config['api']['maps']
 
-    CITY = config.get('address').get('city')
-    STATE = config.get('address').get('state')
-    COUNTRY = config.get('address').get('country')
-
-    ADDR = ','.join(filter(lambda x: x != None, [CITY, STATE, COUNTRY]))
-
-    CUSTOM = config.get('custom') or CUSTOM
+    COORDS = config['coordinates']
+    CUSTOM = config['custom'] or CUSTOM
 
 
 def extract(obj: dict, path: str):
@@ -39,14 +37,11 @@ def extract(obj: dict, path: str):
     return extracted
 
 
-def getLocalNews():
+def getNews():
     r = requests.get('https://newsapi.org/v2/everything?q=' +
                      CITY + '&sortBy=publishedAt&language=en&apiKey=' + NEWS_API)
     with open(ABS_FILE_LOCAL, 'w') as f:
         f.write(r.text)
-
-
-def getNationalNews():
     r = requests.get('https://newsapi.org/v2/top-headlines?country=' +
                      COUNTRY + '&apiKey=' + NEWS_API)
     with open(ABS_FILE_NATIONAL, 'w') as f:
@@ -54,14 +49,17 @@ def getNationalNews():
 
 
 def getWeather():
-    r = requests.get('http://api.openweathermap.org/geo/1.0/direct?q=' +
-                     ADDR + '&limit=0&appid=' + WEATHER_API)
-    geo = json.loads(r.text)
-    lat = geo[0]['lat']
-    lon = geo[0]['lon']
-    r = requests.get('https://api.openweathermap.org/data/2.5/weather?lat=' +
-                     str(lat) + '&lon=' + str(lon) + '&appid=' + WEATHER_API)
+    global CITY, COUNTRY
+    r = requests.get('https://api.openweathermap.org/data/2.5/weather?lat=' + str(
+        COORDS['home']['lat']) + '&lon=' + str(COORDS['home']['lon']) + '&appid=' + WEATHER_API)
+    weather = json.loads(r.text)
+    CITY = weather['name']
+    COUNTRY = weather['sys']['country']
     with open(ABS_FILE_WEATHER, 'w') as f:
+        f.write(r.text)
+    r = requests.get('http://api.openweathermap.org/data/2.5/air_pollution?lat=' + str(
+        COORDS['home']['lat']) + '&lon=' + str(COORDS['home']['lon']) + '&appid=' + WEATHER_API)
+    with open(ABS_FILE_AIRPOLL, 'w') as f:
         f.write(r.text)
 
 
@@ -80,8 +78,8 @@ def getCustom(tick: int, dry: bool):
             CUST_DATA[sourceId] = []
             data = json.loads(requests.get(req['source']).text)
             for field in req['fields']:
-                CUST_DATA[sourceId].append(
-                    {'label': field['label'], 'type': field['type'], 'value': extract(data, field['value'])})
+                CUST_DATA[sourceId] += [{'label': field['label'],
+                                         'type': field['type'], 'value': extract(data, field['value'])}]
     with open(ABS_FILE_CUSTOM, 'w') as f:
         json.dump(CUST_DATA, f)
 
@@ -90,7 +88,7 @@ def log(message: str):
     print('[' + time.strftime('%T') + '] ' + message)
 
 
-def routine(tick: int = 0, dry: bool = False):
+def routine(dry: bool = False, tick: int = 0):
     if (tick % 5) == 0:
         log('Getting weather data...')
         if not dry:
@@ -98,8 +96,7 @@ def routine(tick: int = 0, dry: bool = False):
     if (tick % 60) == 0:
         log('Getting news...')
         if not dry:
-            getLocalNews()
-            getNationalNews()
+            getNews()
     getCustom(tick, dry)
     time.sleep(60)
-    routine((tick+1) % 60, dry)
+    routine(dry, (tick+1) % 60)

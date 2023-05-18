@@ -25,6 +25,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
                     config_data = json.load(f)
                 config_data.pop('password', None)
                 config_data.pop('api', None)
+                config_data.pop('coordinates', None)
                 config_data.pop('custom', None)
                 with open(ABS_FILE_CHANGE) as f:
                     version = re.search(
@@ -51,18 +52,20 @@ class RequestHandler(SimpleHTTPRequestHandler):
                     int(self.headers.get('Content-Length'))))
                 with open(ABS_FILE_ROOM, 'w') as f:
                     json.dump(payload, f)
-                self.send_status(200)
+                self.send_status(200, True)
             else:
-                self.send_status(400)
+                self.send_status(400, True)
         else:
-            self.send_status(401)
+            self.send_status(401, True)
 
     def check_password(self) -> bool:
         return (not bool(PASSWORD)) or self.headers.get('Authorization') == PASSWORD
 
-    def send_status(self, status: int) -> None:
+    def send_status(self, status: int, returnStatus: bool = False) -> None:
         self.send_response(status)
         self.end_headers()
+        if returnStatus:
+            self.wfile.write(('{"status": ' + str(status) + '}').encode())
 
     def send_text(self, text: str) -> None:
         self.send_response(200)

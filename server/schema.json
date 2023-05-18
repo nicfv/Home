@@ -17,91 +17,99 @@
                 "news": {
                     "description": "An API token from https://newsapi.org/",
                     "type": "string"
+                },
+                "maps": {
+                    "description": "An API token from https://www.mapbox.com/",
+                    "type": "string"
                 }
             },
             "required": [
                 "weather",
-                "news"
+                "news",
+                "maps"
             ]
         },
-        "address": {
-            "description": "The physical address of your home",
+        "coordinates": {
+            "description": "Add ",
             "type": "object",
             "properties": {
-                "street": {
-                    "description": "The street address of your home",
-                    "type": "string"
+                "home": {
+                    "description": "Corresponds to the geospatial location of your home",
+                    "type": "object",
+                    "properties": {
+                        "lat": {
+                            "description": "Latitude (North-South)",
+                            "type": "number",
+                            "minimum": -90,
+                            "maximum": 90
+                        },
+                        "lon": {
+                            "description": "Longitude (East-West)",
+                            "type": "number",
+                            "minimum": -180,
+                            "maximum": 180
+                        }
+                    },
+                    "required": [
+                        "lat",
+                        "lon"
+                    ]
                 },
-                "city": {
-                    "description": "The city of your home",
-                    "type": "string"
-                },
-                "state": {
-                    "description": "The state code of your home (US only)",
-                    "type": "string"
-                },
-                "country": {
-                    "description": "The country code of your home",
-                    "type": "string"
+                "work": {
+                    "description": "Corresponds to the geospatial location of your workplace",
+                    "type": "object",
+                    "properties": {
+                        "lat": {
+                            "description": "Latitude (North-South)",
+                            "type": "number",
+                            "minimum": -90,
+                            "maximum": 90
+                        },
+                        "lon": {
+                            "description": "Longitude (East-West)",
+                            "type": "number",
+                            "minimum": -180,
+                            "maximum": 180
+                        }
+                    },
+                    "required": [
+                        "lat",
+                        "lon"
+                    ]
                 }
             },
             "required": [
-                "street",
-                "city",
-                "country"
+                "home",
+                "work"
             ]
         },
-        "layout": {
-            "description": "Define your home's floor plan here.",
+        "floors": {
+            "description": "Define an object containing the floors in your home, starting with the lowest first. Object keys are used as floor names.",
             "type": "object",
-            "properties": {
-                "floors": {
-                    "description": "Define an array containing the floors in your home, starting with the lowest first.",
-                    "type": "array",
-                    "items": {
-                        "description": "Define the rooms in the floor plan here.",
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "description": "The unique name of this floor. E.g. 1st Floor...",
-                                "type": "string"
-                            },
-                            "rooms": {
-                                "description": "Define data associated with each room.",
-                                "type": "array",
-                                "items": {
-                                    "properties": {
-                                        "name": {
-                                            "description": "The unique name of this room.",
-                                            "type": "string",
-                                            "pattern": "^[^$].*"
-                                        },
-                                        "data": {
-                                            "description": "(X,Y) data of room corners in order, in any consistent unit system.",
-                                            "type": "array",
-                                            "items": {
-                                                "description": "(X,Y) data of this room corner.",
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "number"
-                                                },
-                                                "minItems": 2,
-                                                "maxItems": 2
-                                            },
-                                            "minItems": 3
-                                        }
+            "patternProperties": {
+                "^[^$].*": {
+                    "description": "Define the rooms in the floor plan here.",
+                    "type": "object",
+                    "patternProperties": {
+                        "^[^$].*": {
+                            "description": "Cartesian coordinate data of room vertices in order, in any consistent unit system.",
+                            "type": "array",
+                            "items": {
+                                "description": "Cartesian coordinate describing this vertex.",
+                                "type": "object",
+                                "properties": {
+                                    "x": {
+                                        "description": "The x-coordinate of this room's vertex.",
+                                        "type": "number"
                                     },
-                                    "required": [
-                                        "name",
-                                        "data"
-                                    ]
-                                }
+                                    "y": {
+                                        "description": "The y-coordinate of this room's vertex.",
+                                        "type": "number"
+                                    }
+                                },
+                                "minItems": 3
                             }
-                        },
-                        "required": [
-                            "name",
-                            "rooms"
-                        ]
+                        }
                     }
                 }
             }
@@ -114,6 +122,14 @@
                     "description": "The color to use as the accent color in the dashboard.",
                     "type": "string",
                     "pattern": "^#[0-9a-fA-F]{6}$"
+                },
+                "units": {
+                    "description": "Set the preferred unit system (will be shown on startup.) Defaults to SI.",
+                    "enum": [
+                        "US",
+                        "SI"
+                    ],
+                    "default": "SI"
                 }
             }
         },
@@ -182,7 +198,7 @@
     },
     "required": [
         "api",
-        "address",
+        "coordinates",
         "layout"
     ]
 }
