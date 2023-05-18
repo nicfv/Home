@@ -39,18 +39,18 @@ export class FloorPlan {
     }
     /**
      * Add a room to this floor plan.
-     * @param {number[][]} roomData X,Y data of room corners, in order
+     * @param {{x:number,y:number}[]} roomData X,Y data of room corners, in order
      * @param {() => any} onclick Callback function when this room is clicked on
      */
     addRoom(roomData, onclick) {
         // Recalculate min and max values
-        this.minX = Math.min(this.minX, ...roomData.map(xy => xy[0]));
-        this.minY = Math.min(this.minY, ...roomData.map(xy => xy[1]));
-        this.maxX = Math.max(this.maxX, ...roomData.map(xy => xy[0]));
-        this.maxY = Math.max(this.maxY, ...roomData.map(xy => xy[1]));
+        this.minX = Math.min(this.minX, ...roomData.map(xy => xy.x));
+        this.minY = Math.min(this.minY, ...roomData.map(xy => xy.y));
+        this.maxX = Math.max(this.maxX, ...roomData.map(xy => xy.x));
+        this.maxY = Math.max(this.maxY, ...roomData.map(xy => xy.y));
         this.setViewBox();
         const room = document.createElementNS(this.NS, 'path');
-        room.setAttribute('d', 'M ' + roomData.map(xy => xy[0] + ',' + xy[1]).join(' ') + ' z');
+        room.setAttribute('d', 'M ' + roomData.map(xy => xy.x + ',' + xy.y).join(' ') + ' z');
         room.setAttribute('vector-effect', 'non-scaling-stroke');
         room.addEventListener('click', onclick);
         this.svg.appendChild(room);

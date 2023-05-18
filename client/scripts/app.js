@@ -18,13 +18,14 @@ window.onload = () => {
 };
 
 function main() {
-    let currentFloor = 0;
+    let currentFloor = 0,
+        unitSystem = '';
     FlexDoc.build(document.body, true, [[0, 0, 0, 100, 0], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'min-content';
     FlexDoc.getBranch(3).style.height = '65%';
     FlexDoc.getBranch(4).style.height = 'calc(35% - 0.5em)';
     REST.get('config.json', config => {
-        document.title = config['address']['street'];
+        unitSystem = config['preferences']?.['units'] ?? 'SI';
         const root = document.querySelector(':root');
         // Set color preference
         const pref = config['preferences']?.['color'];
@@ -37,7 +38,7 @@ function main() {
         FlexDoc.getLeaf(4).textContent = 'Version ' + config['version'];
         // Add floor plan controls
         let showFloor = () => { };
-        const numFloors = config['layout']['floors'].length,
+        const floors = Object.entries(config['floors']),
             btnContainer = document.createElement('div'),
             down = new JBtn('<', () => { showFloor(-1); }, btnContainer, 'Go down one floor.'),
             up = new JBtn('>', () => { showFloor(1); }, btnContainer, 'Go up one floor.'),
@@ -52,12 +53,12 @@ function main() {
             showFloor = delta => {
                 currentFloor += delta;
                 (currentFloor > 0) ? down.enable() : down.disable();
-                (currentFloor < numFloors - 1) ? up.enable() : up.disable();
-                floorName.textContent = config['layout']['floors'][currentFloor]['name'];
+                (currentFloor < floors.length - 1) ? up.enable() : up.disable();
+                floorName.textContent = floors[currentFloor][0];
                 FP.clear();
                 showRoom(FlexDoc.getLeaf(6));
-                for (let room of config['layout']['floors'][currentFloor]['rooms']) {
-                    FP.addRoom(room['data'], () => showRoom(FlexDoc.getLeaf(6), room['name'], roomData));
+                for (let room in floors[currentFloor][1]) {
+                    FP.addRoom(floors[currentFloor][1][room], () => showRoom(FlexDoc.getLeaf(6), room, roomData));
                 }
             };
             showFloor(0);
@@ -88,6 +89,16 @@ function main() {
             humidity = new UnitSwitcher(weather['main']['humidity'], weather['main']['humidity'] / 100, '%', '1.0'),
             press = new UnitSwitcher(weather['main']['pressure'] / 10, JMath.hPatoATM(weather['main']['pressure']), 'kPa', 'atm');
         wind.getElement().append(' (' + weather['wind']['deg'] + '\u00B0)');
+        // Check unit preference
+        if (unitSystem === 'US') {
+            visibility.click();
+            wind.click();
+            temp.click();
+            temp_hum.click();
+            temp_min.click();
+            temp_max.click();
+            press.click();
+        }
         // Create JTables
         JTable.build(FlexDoc.getLeaf(0), [
             [dt_date, dt_clock],
@@ -195,7 +206,7 @@ function showRoom(parent, name, data) {
     }
     if (name) {
         const CL = new Checklist(parent, list => {
-            data[name] = list
+            data[name] = list;
             REST.post('room.json', data, console.log);
         }, name);
         // No list has been created yet for this room

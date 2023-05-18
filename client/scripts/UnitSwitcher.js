@@ -39,6 +39,12 @@ export class UnitSwitcher {
         this.el.setAttribute('title', 'Click here to switch unit system.');
     }
     /**
+     * Simulate a click on this element.
+     */
+    click() {
+        this.el.click();
+    }
+    /**
      * Return the containing element of this `UnitSwitcher`
      * @returns The containing HTML element
      */
