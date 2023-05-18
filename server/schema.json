@@ -199,6 +199,6 @@
     "required": [
         "api",
         "coordinates",
-        "layout"
+        "floors"
     ]
 }
