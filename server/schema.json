@@ -130,6 +130,20 @@
                         "SI"
                     ],
                     "default": "SI"
+                },
+                "flip": {
+                    "description": "If the floor plan is mirrored, adjust these parameters.",
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "description": "Determine whether to flip the X-coordinate.",
+                            "type": "boolean"
+                        },
+                        "y": {
+                            "description": "Determine whether to flip the Y-coordinate.",
+                            "type": "boolean"
+                        }
+                    }
                 }
             }
         },

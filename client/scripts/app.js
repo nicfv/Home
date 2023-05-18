@@ -48,7 +48,7 @@ function main() {
         FlexDoc.getLeaf(5).style.position = 'relative';
         FlexDoc.getLeaf(5).appendChild(btnContainer);
         // Generate floor plan
-        const FP = new FloorPlan(FlexDoc.getLeaf(5));
+        const FP = new FloorPlan(FlexDoc.getLeaf(5), !!config['preferences']?.['flip']?.['x'], !!config['preferences']?.['flip']?.['y']);
         REST.get('room.json', roomData => {
             showFloor = delta => {
                 currentFloor += delta;

@@ -24,12 +24,24 @@ export class FloorPlan {
      */
     maxY = 0;
     /**
+     * @private Scale-X
+     */
+    sX = 1;
+    /**
+     * @private Scale-Y
+     */
+    sY = 1;
+    /**
      * Initialize a new floor plan.
      * @param {HTMLElement} parent The parent element to append this floor plan onto
+     * @param {boolean} flipX Determine whether to flip the coordinates in X
+     * @param {boolean} flipY Determine whether to flip the coordinates in X
      */
-    constructor(parent) {
+    constructor(parent, flipX = false, flipY = false) {
         this.setViewBox();
         parent.appendChild(this.svg);
+        flipX && (this.sX = -1);
+        flipY && (this.sY = -1);
     }
     /**
      * @private Set the viewbox of the SVG based on the floor size.
@@ -44,13 +56,13 @@ export class FloorPlan {
      */
     addRoom(roomData, onclick) {
         // Recalculate min and max values
-        this.minX = Math.min(this.minX, ...roomData.map(xy => xy.x));
-        this.minY = Math.min(this.minY, ...roomData.map(xy => xy.y));
-        this.maxX = Math.max(this.maxX, ...roomData.map(xy => xy.x));
-        this.maxY = Math.max(this.maxY, ...roomData.map(xy => xy.y));
+        this.minX = Math.min(this.minX, ...roomData.map(xy => this.sX * xy.x));
+        this.minY = Math.min(this.minY, ...roomData.map(xy => this.sY * xy.y));
+        this.maxX = Math.max(this.maxX, ...roomData.map(xy => this.sX * xy.x));
+        this.maxY = Math.max(this.maxY, ...roomData.map(xy => this.sY * xy.y));
         this.setViewBox();
         const room = document.createElementNS(this.NS, 'path');
-        room.setAttribute('d', 'M ' + roomData.map(xy => xy.x + ',' + xy.y).join(' ') + ' z');
+        room.setAttribute('d', 'M ' + roomData.map(xy => this.sX * xy.x + ',' + this.sY * xy.y).join(' ') + ' z');
         room.setAttribute('vector-effect', 'non-scaling-stroke');
         room.addEventListener('click', onclick);
         this.svg.appendChild(room);
