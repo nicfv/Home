@@ -143,6 +143,6 @@ $$\frac{100,000\frac{\text{requests}}{\text{month}}}{30\frac{\text{days}}{\text{
 
 ## Screenshots
 
-![basic-light](https://i.postimg.cc/4ygpHXq2/screenshot.png)
+[![screenshot.png](https://i.postimg.cc/4ygpHXq2/screenshot.png)](https://postimg.cc/34tkPQK2)
 
-![help](https://i.postimg.cc/MKt1X2Dt/screenshot-help.png)
+[![screenshot-help.png](https://i.postimg.cc/MKt1X2Dt/screenshot-help.png)](https://postimg.cc/RN6WbY2n)
