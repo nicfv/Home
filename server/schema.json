@@ -136,81 +136,83 @@
                         }
                     },
                     "additionalProperties": false
+                },
+                "autoReloadInterval": {
+                    "description": "If set, determines the interval, in minutes, that the browser should refresh automatically. If a server password is set, it will prompt the user to enter the password each time.",
+                    "type": "number",
+                    "minimum": 1
                 }
             },
             "additionalProperties": false
         },
         "custom": {
             "description": "Display static data in the custom panel from JSON files.",
-            "type": "array",
-            "items": {
-                "description": "Define a data source for the custom panel.",
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "description": "The name of the custom datasource.",
-                        "type": "string"
-                    },
-                    "source": {
-                        "description": "The relative source file path or URL of the JSON data file.",
-                        "type": "string"
-                    },
-                    "interval": {
-                        "description": "The interval in minutes of requesting data.",
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 60
-                    },
-                    "fields": {
-                        "description": "Define one or multiple data fields to display from this data source.",
-                        "type": "array",
-                        "items": {
-                            "description": "Represents one data field.",
+            "type": "object",
+            "patternProperties": {
+                "^[^$].*": {
+                    "description": "Define a data source for the custom panel.",
+                    "type": "object",
+                    "properties": {
+                        "source": {
+                            "description": "The relative source file path or URL of the JSON data file.",
+                            "type": "string"
+                        },
+                        "interval": {
+                            "description": "The interval in minutes of requesting data.",
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 60
+                        },
+                        "fields": {
+                            "description": "Define one or multiple data fields to display from this data source.",
                             "type": "object",
-                            "properties": {
-                                "label": {
-                                    "description": "The user-readable field name.",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "description": "Input a valid JSON path to obtain a data value.",
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "description": "Define the expected return type of data obtained by the JSON path.",
-                                    "enum": [
-                                        "string",
-                                        "number",
-                                        "timestamp",
-                                        "duration"
-                                    ]
-                                },
-                                "prefix": {
-                                    "description": "Add a display prefix to the value.",
-                                    "type": "string"
-                                },
-                                "suffix": {
-                                    "description": "Add a display suffix to the value.",
-                                    "type": "string"
+                            "patternProperties": {
+                                "^[^$].*": {
+                                    "description": "Represents one data field.",
+                                    "type": "object",
+                                    "properties": {
+                                        "value": {
+                                            "description": "Input a valid JSON path to obtain a data value.",
+                                            "type": "string"
+                                        },
+                                        "type": {
+                                            "description": "Define the expected return type of data obtained by the JSON path.",
+                                            "enum": [
+                                                "string",
+                                                "number",
+                                                "timestamp",
+                                                "duration"
+                                            ],
+                                            "default": "string"
+                                        },
+                                        "prefix": {
+                                            "description": "Add a display prefix to the value.",
+                                            "type": "string"
+                                        },
+                                        "suffix": {
+                                            "description": "Add a display suffix to the value.",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "value",
+                                        "type"
+                                    ],
+                                    "additionalProperties": false
                                 }
                             },
-                            "required": [
-                                "label",
-                                "value",
-                                "type"
-                            ],
                             "additionalProperties": false
                         }
-                    }
-                },
-                "required": [
-                    "name",
-                    "source",
-                    "interval",
-                    "fields"
-                ],
-                "additionalProperties": false
-            }
+                    },
+                    "required": [
+                        "source",
+                        "interval",
+                        "fields"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
         }
     },
     "patternProperties": {

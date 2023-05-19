@@ -76,17 +76,17 @@ def getCustom(tick: int, dry: bool):
     else:
         with open(ABS_FILE_CUSTOM) as f:
             CUST_DATA = json.load(f)
-    for req in CUSTOM:
-        if (tick % req['interval']) == 0:
-            log('Getting custom data from ' + req['name'] + '...')
+    for ds in CUSTOM:
+        ds_data = dict(CUSTOM[ds])
+        if (tick % ds_data['interval']) == 0:
+            log('Getting custom data from ' + ds + '...')
             if dry:
                 return
-            sourceId = req['name']
-            CUST_DATA[sourceId] = []
-            data = json.loads(requests.get(req['source']).text)
-            for field in req['fields']:
-                CUST_DATA[sourceId] += [{'label': field['label'],
-                                         'type': field['type'], 'value': extract(data, field['value'])}]
+            data = json.loads(requests.get(ds_data.pop('source')).text)
+            for field in ds_data['fields']:
+                ds_data['fields'][field]['value'] = extract(
+                    data, ds_data['fields'][field]['value'])
+            CUST_DATA[ds] = ds_data
     with open(ABS_FILE_CUSTOM, 'w') as f:
         json.dump(CUST_DATA, f)
 

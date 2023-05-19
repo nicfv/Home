@@ -36,6 +36,11 @@ function main() {
         }
         // Show version number
         FlexDoc.getLeaf(5).textContent = 'Version ' + config['version'];
+        // Check for auto-refresh
+        const autoReloadInterval = config['preferences']?.['autoReloadInterval'];
+        if (autoReloadInterval) {
+            setTimeout(() => window.location.reload(), +autoReloadInterval * 1000 * 60);
+        }
         // Add floor plan controls
         let showFloor = () => { };
         const floors = Object.entries(config['floors']),
@@ -259,33 +264,32 @@ function showCustom(parent, customData) {
         JT.addHeaders([header]);
         header.textContent = source;
         header.parentElement.setAttribute('colspan', '2');
-        for (let field of customData[source]) {
-            /**
-             * @type {string}
-             */
-            let formattedValue;
-            switch (field['type']) {
+        for (let field in customData[source]['fields']) {
+            const fieldData = customData[source]['fields'][field];
+            let formattedValue = fieldData['prefix'] ?? '';
+            switch (fieldData['type']) {
                 case ('string'): {
-                    formattedValue = '' + field['value'];
+                    formattedValue += fieldData['value'];
                     break;
                 }
                 case ('number'): {
-                    formattedValue = (+field['value']).toLocaleString()
+                    formattedValue += (+fieldData['value']).toLocaleString()
                     break;
                 }
                 case ('timestamp'): {
-                    formattedValue = JTime.format(+field['value']);
+                    formattedValue += JTime.timestampToString(+fieldData['value']);
                     break;
                 }
                 case ('duration'): {
-                    formattedValue = JTime.format(+field['value']);
+                    formattedValue += JTime.format(+fieldData['value']);
                     break;
                 }
                 default: {
-                    throw new Error('Missing or incorrect field type found in ' + source + ' ' + field['name']);
+                    throw new Error('Missing or incorrect field type found in ' + source + ' ' + fieldData['name']);
                 }
             }
-            JT.addData([field['label'], formattedValue]);
+            formattedValue += fieldData['suffix'] ?? '';
+            JT.addData([field, formattedValue]);
         }
     }
 }
