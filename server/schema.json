@@ -15,7 +15,7 @@
                     "type": "string"
                 },
                 "news": {
-                    "description": "An API token from https://newsapi.org/",
+                    "description": "An API token from https://newsdata.io/",
                     "type": "string"
                 },
                 "maps": {

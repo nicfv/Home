@@ -38,12 +38,12 @@ def extract(obj: dict, path: str):
 
 
 def getNews():
-    r = requests.get('https://newsapi.org/v2/everything?q=' +
-                     CITY + '&sortBy=publishedAt&language=en&apiKey=' + NEWS_API)
+    r = requests.get('https://newsdata.io/api/1/news?country=' +
+                     COUNTRY + '&q=' + CITY + '&language=en&apiKey=' + NEWS_API)
     with open(ABS_FILE_LOCAL, 'w') as f:
         f.write(r.text)
-    r = requests.get('https://newsapi.org/v2/top-headlines?country=' +
-                     COUNTRY + '&apiKey=' + NEWS_API)
+    r = requests.get('https://newsdata.io/api/1/news?country=' +
+                     COUNTRY + '&language=en&apiKey=' + NEWS_API)
     with open(ABS_FILE_NATIONAL, 'w') as f:
         f.write(r.text)
 

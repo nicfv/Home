@@ -170,30 +170,30 @@ function generateNewspaper(parent, name, news) {
         ART.show();
         ART.clear();
         ART.addData([article['title']]);
-        if (article['urlToImage']) {
+        if (article['image_url']) {
             const img = document.createElement('img');
-            img.src = article['urlToImage'];
+            img.src = article['image_url'];
             ART.addData([img]);
         }
-        ART.addData([article['author'] ?? 'No Author']);
-        ART.addData([article['publishedAt']]);
-        ART.addData([article['description']]);
+        ART.addData([article['creator']?.[0] ?? 'No Author']);
+        ART.addData([article['pubDate']]);
+        ART.addData([article['content']]);
         const external = document.createElement('a');
-        external.textContent = article['source']['name'];
+        external.textContent = article['source_id'];
         external.setAttribute('title', 'Visit the article (links to external website.)');
         external.setAttribute('target', '_blank');
-        external.setAttribute('href', article['url']);
+        external.setAttribute('href', article['link']);
         ART.addData([external]);
     }
-    for (let article of news['articles']) {
+    for (let article of news['results']) {
         const internal = document.createElement('a'),
             external = document.createElement('a');
         internal.textContent = article['title'];
-        external.textContent = article['source']['name'];
+        external.textContent = article['source_id'];
         internal.setAttribute('title', 'View a short summary of this article.');
         external.setAttribute('title', 'Visit the article (links to external website.)');
         external.setAttribute('target', '_blank');
-        external.setAttribute('href', article['url']);
+        external.setAttribute('href', article['link']);
         internal.addEventListener('click', () => showArticle(article));
         NP.addData([internal, external]);
     }
