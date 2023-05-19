@@ -141,6 +141,24 @@
                     "description": "If set, determines the interval, in minutes, that the browser should refresh automatically. If a server password is set, it will prompt the user to enter the password each time.",
                     "type": "number",
                     "minimum": 1
+                },
+                "newsCategory": {
+                    "description": "Set a custom news category here. If unset, defaults to business.",
+                    "enum": [
+                        "business",
+                        "entertainment",
+                        "environment",
+                        "food",
+                        "health",
+                        "politics",
+                        "science",
+                        "sports",
+                        "technology",
+                        "top",
+                        "tourism",
+                        "world"
+                    ],
+                    "default": "business"
                 }
             },
             "additionalProperties": false

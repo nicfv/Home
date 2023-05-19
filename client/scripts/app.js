@@ -17,9 +17,19 @@ window.onload = () => {
     });
 };
 
+/**
+ * Return the string in proper casing.
+ * @param {string} str Input
+ * @returns The string in proper casing
+ */
+function properCase(str) {
+    return str[0].toUpperCase() + str.substring(1);
+}
+
 function main() {
     let currentFloor = 0,
-        unitSystem = '';
+        unitSystem = '',
+        newsCategory = '';
     FlexDoc.build(document.body, true, [[0, 0, 0, 0, 100, 0], [[75, 25], [50, 50]]]);
     FlexDoc.getBranch(1).style.width = 'min-content';
     FlexDoc.getBranch(3).style.height = '65%';
@@ -36,6 +46,8 @@ function main() {
         }
         // Show version number
         FlexDoc.getLeaf(5).textContent = 'Version ' + config['version'];
+        // Get custom news category
+        newsCategory = config['preferences']?.['newsCategory'] ?? 'business';
         // Check for auto-refresh
         const autoReloadInterval = config['preferences']?.['autoReloadInterval'];
         if (autoReloadInterval) {
@@ -68,9 +80,8 @@ function main() {
             };
             showFloor(0);
         });
-
     });
-    REST.get('news-local.json', news => generateNewspaper(FlexDoc.getLeaf(8), 'Local News', news));
+    REST.get('news-category.json', news => generateNewspaper(FlexDoc.getLeaf(8), properCase(newsCategory) + ' News', news));
     REST.get('news-national.json', news => generateNewspaper(FlexDoc.getLeaf(9), 'National News', news));
     REST.get('weather.json', weather => {
         const dt_date = document.createElement('div'),
@@ -177,7 +188,7 @@ function generateNewspaper(parent, name, news) {
         }
         ART.addData([article['creator']?.[0] ?? 'No Author']);
         ART.addData([article['pubDate']]);
-        ART.addData([article['content']]);
+        ART.addData([article['description']]);
         const external = document.createElement('a');
         external.textContent = article['source_id'];
         external.setAttribute('title', 'Visit the article (links to external website.)');

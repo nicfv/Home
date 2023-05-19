@@ -9,12 +9,12 @@ MAPS_API = ''
 COORDS = {}
 CUSTOM = {}
 
-CITY = ''
+CATEGORY = 'business'
 COUNTRY = ''
 
 
 def readConfig():
-    global WEATHER_API, NEWS_API, MAPS_API, COORDS, CUSTOM
+    global WEATHER_API, NEWS_API, MAPS_API, COORDS, CATEGORY, CUSTOM
     with open(ABS_FILE_CONFIG, 'r') as f:
         config = json.load(f)
 
@@ -24,6 +24,8 @@ def readConfig():
 
     COORDS = config['coordinates']
     CUSTOM = config['custom'] or CUSTOM
+    if config['preferences']:
+        CATEGORY = config['preferences']['newsCategory'] or CATEGORY
 
 
 def extract(obj: dict, path: str):
@@ -38,8 +40,8 @@ def extract(obj: dict, path: str):
 
 
 def getNews():
-    r = requests.get('https://newsdata.io/api/1/news?country=' +
-                     COUNTRY + '&q=' + CITY + '&language=en&apiKey=' + NEWS_API)
+    r = requests.get('https://newsdata.io/api/1/news?country=' + COUNTRY +
+                     '&category=' + CATEGORY + '&language=en&apiKey=' + NEWS_API)
     with open(ABS_FILE_LOCAL, 'w') as f:
         f.write(r.text)
     r = requests.get('https://newsdata.io/api/1/news?country=' +
@@ -49,11 +51,10 @@ def getNews():
 
 
 def getWeather():
-    global CITY, COUNTRY
+    global COUNTRY
     r = requests.get('https://api.openweathermap.org/data/2.5/weather?lat=' + str(
         COORDS['home']['lat']) + '&lon=' + str(COORDS['home']['lon']) + '&appid=' + WEATHER_API)
     weather = json.loads(r.text)
-    CITY = weather['name']
     COUNTRY = weather['sys']['country']
     with open(ABS_FILE_WEATHER, 'w') as f:
         f.write(r.text)
