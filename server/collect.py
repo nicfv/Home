@@ -23,9 +23,9 @@ def readConfig():
     MAPS_API = config['api']['maps']
 
     COORDS = config['coordinates']
-    CUSTOM = config['custom'] or CUSTOM
-    if config['preferences']:
-        CATEGORY = config['preferences']['newsCategory'] or CATEGORY
+    CUSTOM = config.get('custom') or CUSTOM
+    if config.get('preferences'):
+        CATEGORY = config.get('preferences').get('newsCategory') or CATEGORY
 
 
 def extract(obj: dict, path: str):
