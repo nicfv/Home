@@ -143,6 +143,6 @@ $$\frac{100,000\frac{\text{requests}}{\text{month}}}{30\frac{\text{days}}{\text{
 
 ## Screenshots
 
-![screenshot.png](https://i.postimg.cc/4ygpHXq2/screenshot.png) (https://postimg.cc/34tkPQK2)
+![screenshot](https://github.com/nicfv/Home/assets/24358775/54a5b855-4335-4736-afed-263d04112bfa)
 
-![screenshot-help.png](https://i.postimg.cc/MKt1X2Dt/screenshot-help.png) (https://postimg.cc/RN6WbY2n)
+![screenshot-help](https://github.com/nicfv/Home/assets/24358775/00e01e1e-76dc-4239-b9a3-74d2c35a76c8)
