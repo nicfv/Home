@@ -27,7 +27,8 @@
                 "weather",
                 "news",
                 "maps"
-            ]
+            ],
+            "additionalProperties": false
         },
         "coordinates": {
             "description": "Add ",
@@ -53,35 +54,18 @@
                     "required": [
                         "lat",
                         "lon"
-                    ]
+                    ],
+                    "additionalProperties": false
                 },
                 "work": {
-                    "description": "Corresponds to the geospatial location of your workplace",
-                    "type": "object",
-                    "properties": {
-                        "lat": {
-                            "description": "Latitude (North-South)",
-                            "type": "number",
-                            "minimum": -90,
-                            "maximum": 90
-                        },
-                        "lon": {
-                            "description": "Longitude (East-West)",
-                            "type": "number",
-                            "minimum": -180,
-                            "maximum": 180
-                        }
-                    },
-                    "required": [
-                        "lat",
-                        "lon"
-                    ]
+                    "$ref": "#/properties/coordinates/properties/home"
                 }
             },
             "required": [
                 "home",
                 "work"
-            ]
+            ],
+            "additionalProperties": false
         },
         "floors": {
             "description": "Define an object containing the floors in your home, starting with the lowest first. Object keys are used as floor names.",
@@ -107,12 +91,19 @@
                                         "type": "number"
                                     }
                                 },
-                                "minItems": 3
-                            }
+                                "required": [
+                                    "x",
+                                    "y"
+                                ],
+                                "additionalProperties": false
+                            },
+                            "minItems": 3
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "preferences": {
             "description": "General application preferences",
@@ -143,9 +134,11 @@
                             "description": "Determine whether to flip the Y-coordinate.",
                             "type": "boolean"
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "custom": {
             "description": "Display static data in the custom panel from JSON files.",
@@ -191,13 +184,22 @@
                                         "timestamp",
                                         "duration"
                                     ]
+                                },
+                                "prefix": {
+                                    "description": "Add a display prefix to the value.",
+                                    "type": "string"
+                                },
+                                "suffix": {
+                                    "description": "Add a display suffix to the value.",
+                                    "type": "string"
                                 }
                             },
                             "required": [
                                 "label",
                                 "value",
                                 "type"
-                            ]
+                            ],
+                            "additionalProperties": false
                         }
                     }
                 },
@@ -206,13 +208,18 @@
                     "source",
                     "interval",
                     "fields"
-                ]
+                ],
+                "additionalProperties": false
             }
         }
+    },
+    "patternProperties": {
+        "^\\$": true
     },
     "required": [
         "api",
         "coordinates",
         "floors"
-    ]
+    ],
+    "additionalProperties": false
 }
