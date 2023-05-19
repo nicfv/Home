@@ -100,9 +100,11 @@
                             "minItems": 3
                         }
                     },
+                    "minProperties": 1,
                     "additionalProperties": false
                 }
             },
+            "minProperties": 1,
             "additionalProperties": false
         },
         "preferences": {
@@ -219,6 +221,7 @@
                                     "additionalProperties": false
                                 }
                             },
+                            "minProperties": 1,
                             "additionalProperties": false
                         }
                     },
@@ -230,6 +233,7 @@
                     "additionalProperties": false
                 }
             },
+            "minProperties": 1,
             "additionalProperties": false
         }
     },
