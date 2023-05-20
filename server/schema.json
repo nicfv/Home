@@ -2,9 +2,24 @@
     "$schema": "http://json-schema.org/schema",
     "type": "object",
     "properties": {
-        "password": {
-            "description": "Optionally create a server password.",
-            "type": "string"
+        "server": {
+            "description": "Server arguments.",
+            "type": "object",
+            "properties": {
+                "password": {
+                    "description": "Optionally create a server password.",
+                    "type": "string"
+                },
+                "port": {
+                    "description": "Optionally set a port number. Defaults to 8000",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 65535,
+                    "multipleOf": 1,
+                    "default": 8000
+                }
+            },
+            "additionalProperties": false
         },
         "api": {
             "description": "A list of required API keys/tokens",

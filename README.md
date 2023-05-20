@@ -36,7 +36,7 @@ Open the newly created configuration file, `config.json` in the home directory w
 ```
 
 ### Required Parameters
-In this scope, there are several optional properties, and 3 required ones: `api`, `coordinates`, and `floors`. Start by including the API keys:
+In this scope, there are several optional parameters, and 3 required ones: `api`, `coordinates`, and `floors`. Start by including the API keys:
 ```json
 "api": {
     "weather": "...",
@@ -60,7 +60,7 @@ The next required field is `coordinates` which follows this schema:
 ```
 Use a tool like Google maps to determine the coordinates for your home and workplace.
 
-The last required property is `floors`, which is an object that contains key-value pairs, where *keys* are floor names and *values* contain room data from that floor. The room data is also formatted in key-value pairs, where the *key* is that room's name, and the *value* is an array of at least 3 (X,Y) coordinate pairs.
+The last required parameter is `floors`, which is an object that contains key-value pairs, where *keys* are floor names and *values* contain room data from that floor. The room data is also formatted in key-value pairs, where the *key* is that room's name, and the *value* is an array of at least 3 (X,Y) coordinate pairs.
 ```json
 "floors": {
     "First Floor": {
@@ -76,9 +76,12 @@ The last required property is `floors`, which is an object that contains key-val
 ```
 
 ### Optional Parameters
-This section lists the optional parameters to further customize your home dashboard. If you are exposing your server to the public, or just want an added security, add the `password` parameter.
+This section lists the optional parameters to further customize your home dashboard. The `server` parameter allows configuration options for running the server. If you are exposing your server to the public, or just want an added security, add the `password` subparameter. The `port` subparameter allows changing the server port number from the default value of 8000.
 ```json
-"password": "mypassword"
+"server": {
+    "password": "mypassword",
+    "port": 8001
+}
 ```
 
 The `preferences` parameter contains many customization options.
