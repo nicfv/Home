@@ -31,11 +31,14 @@ def readConfig():
 def extract(obj: dict, path: str):
     extracted = obj
     parts = path.split('.')
-    for part in parts:
-        if part.isnumeric():
-            extracted = extracted[int(part)]
-        else:
-            extracted = extracted[part]
+    try:
+        for part in parts:
+            if part.isnumeric():
+                extracted = extracted[int(part)]
+            else:
+                extracted = extracted[part]
+    except:
+        return 'Invalid path'
     return extracted
 
 
