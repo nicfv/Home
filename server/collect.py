@@ -81,7 +81,7 @@ def getCustom(tick: int, dry: bool):
         with open(ABS_FILE_CUSTOM) as f:
             CUST_DATA = json.load(f)
     for ds in CUSTOM:
-        ds_data = dict(CUSTOM[ds])
+        ds_data = json.loads(json.dumps(CUSTOM[ds]))
         if (tick % ds_data['interval']) == 0:
             log('Getting custom data from ' + ds + '...')
             if dry:
