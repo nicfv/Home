@@ -124,7 +124,11 @@ Finally, the `custom` parameter allows for custom datasource data to be shown in
 ```
 
 ## Using Your Home Dashboard
-If 
+The panels on the left are the geographical, weather, commute, and custom panels. The geographical panel contains a link to Google Maps using your home's coordinates. For the weather and commute panels, click on the units to switch using US/SI units. Default units can be set in `config.json`. For the commute time metric, clicking on that will switch from absolute time to relative time, based on the typical commute time. A positive number indicates extra traffic while a negative number means the commute time is shorter than usual. The custom data panel contains the responses to the GET requests from the configuration file.
+
+In the center and right are the floor plan and checklist panels. If your home has multiple floors, click on the arrows at the top left to move up and down a floor. Here, you can click on the different rooms to view a checklist for each room. Checklist data is saved on the server and is available to read and write for anyone with the server password (if one is set.)
+
+Finally, below are the 2 news panels. On the left is the custom news category, set in `config.json` default to business news, and on the right is national news, for the country where the home coordinates reside. Click on the article titles to see some more details about the news article, or click the source name on the right of the title to be taken to that article's page.
 
 ## API Request Limits
 The server is configured to request updates from OpenWeatherMap and Mapbox every 5 minutes, and from NewsData every hour. If you wish to reconfigure this in `server/collect.py`, note the API rate limits. The news and weather APIs are called twice back-to-back to obtain all the required data for the frontend. At the time of posting, these are the limits on free tiers:
