@@ -188,7 +188,7 @@ function generateNewspaper(parent, name, news) {
         }
         ART.addData([article['creator']?.[0] ?? 'No Author']);
         ART.addData([article['pubDate']]);
-        ART.addData([article['description']]);
+        ART.addData([article['content'] ?? article['description'] ?? 'No content provided.']);
         const external = document.createElement('a');
         external.textContent = article['source_id'];
         external.setAttribute('title', 'Visit the article (links to external website.)');
