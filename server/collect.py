@@ -3,6 +3,8 @@ import json
 import time
 from server.setup import ABS_FILE_CONFIG, ABS_FILE_LOCAL, ABS_FILE_NATIONAL, ABS_FILE_WEATHER, ABS_FILE_AIRPOLL, ABS_FILE_TRAFFIC, ABS_FILE_CUSTOM
 
+DO_SHUTDOWN = False
+
 WEATHER_API = ''
 NEWS_API = ''
 MAPS_API = ''
@@ -104,12 +106,31 @@ def routine(dry: bool = False, tick: int = 0):
         log('Getting weather data...')
         log('Getting traffic data...')
         if not dry:
-            getWeather()
-            getTraffic()
+            try:
+                getWeather()
+                getTraffic()
+            except Exception as e:
+                print(e)
     if (tick % 60) == 0:
         log('Getting news...')
         if not dry:
-            getNews()
-    getCustom(tick, dry)
-    time.sleep(60)
+            try:
+                getNews()
+            except Exception as e:
+                print(e)
+    try:
+        getCustom(tick, dry)
+    except Exception as e:
+        print(e)
+    # Sleep 60 seconds, checking every second for a shutdown command
+    for i in range(0, 60):
+        time.sleep(1)
+        if DO_SHUTDOWN:
+            print('Data collection stopped.')
+            return
     routine(dry, (tick+1) % 60)
+
+
+def stopCollecting() -> None:
+    global DO_SHUTDOWN
+    DO_SHUTDOWN = True

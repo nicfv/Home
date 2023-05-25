@@ -4,6 +4,7 @@ import re
 from server.setup import DIR_CLIENT, FILE_CONFIG, ABS_FILE_CONFIG, FILE_ROOM, ABS_FILE_ROOM, FILE_LOCAL, ABS_FILE_LOCAL, FILE_NATIONAL, ABS_FILE_NATIONAL, FILE_WEATHER, ABS_FILE_WEATHER, FILE_TRAFFIC, ABS_FILE_TRAFFIC, FILE_CUSTOM, ABS_FILE_CUSTOM, ABS_FILE_CHANGE
 
 PASSWORD = None
+SERVER = None
 
 SERVED_FILES = {
     FILE_LOCAL: ABS_FILE_LOCAL,
@@ -75,7 +76,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
 
 def startServer() -> None:
-    global PASSWORD
+    global PASSWORD, SERVER
     port = 8000
     with open(ABS_FILE_CONFIG) as f:
         config = json.load(f)
@@ -83,8 +84,14 @@ def startServer() -> None:
             PASSWORD = config.get('server').get('password')
             port = config.get('server').get('port') or 8000
     try:
-        server = HTTPServer(('', port), RequestHandler)
-        print('Starting server on port ' + str(server.server_port))
-        server.serve_forever()
+        SERVER = HTTPServer(('', port), RequestHandler)
+        print('Starting server on port ' + str(SERVER.server_port))
+        SERVER.serve_forever()
     except Exception as e:
         print(e.strerror)
+
+
+def shutdownServer() -> None:
+    global SERVER
+    SERVER.shutdown()
+    print('Server stopped.')
