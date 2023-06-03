@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+- Change collection routine from recursive function to `while` loop to avoid stack overflow error
+
 ## 1.1.0
 
 - First minor update, backend

@@ -102,33 +102,34 @@ def log(message: str):
 
 
 def routine(dry: bool = False, tick: int = 0):
-    if (tick % 5) == 0:
-        log('Getting weather data...')
-        log('Getting traffic data...')
-        if not dry:
-            try:
-                getWeather()
-                getTraffic()
-            except Exception as e:
-                print(e)
-    if (tick % 60) == 0:
-        log('Getting news...')
-        if not dry:
-            try:
-                getNews()
-            except Exception as e:
-                print(e)
-    try:
-        getCustom(tick, dry)
-    except Exception as e:
-        print(e)
-    # Sleep 60 seconds, checking every second for a shutdown command
-    for i in range(0, 60):
-        time.sleep(1)
-        if DO_SHUTDOWN:
-            print('Data collection stopped.')
-            return
-    routine(dry, (tick+1) % 60)
+    while True:
+        if (tick % 5) == 0:
+            log('Getting weather data...')
+            log('Getting traffic data...')
+            if not dry:
+                try:
+                    getWeather()
+                    getTraffic()
+                except Exception as e:
+                    print(e)
+        if (tick % 60) == 0:
+            log('Getting news...')
+            if not dry:
+                try:
+                    getNews()
+                except Exception as e:
+                    print(e)
+        try:
+            getCustom(tick, dry)
+        except Exception as e:
+            print(e)
+        # Sleep 60 seconds, checking every second for a shutdown command
+        for i in range(0, 60):
+            time.sleep(1)
+            if DO_SHUTDOWN:
+                print('Data collection stopped.')
+                return
+        tick = (tick+1) % 60
 
 
 def stopCollecting() -> None:
